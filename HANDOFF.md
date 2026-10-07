@@ -27,6 +27,23 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 7 Oct 2026: now a git repo
+
+- **The project is a git repository** (`main`), pushed to the private GitHub repo
+  `sianshrestha/scalina-website`. Every "no git repo" note below is superseded.
+  Commits carry the owner's name only: no Claude attribution or co-author lines.
+- README rewritten with screenshots (`docs/screenshots/`, captured from a
+  production build with reduced motion so entrances are settled). The old
+  technical README is `docs/ARCHITECTURE.md`.
+- ANFA Australia now has its finished video (`public/work/anfa-australia/`).
+- Founder photo is `public/founder-portrait.jpg` (1254px).
+- **Fixed a homepage crash:** vendored `FlowingMenu` measured a closed panel as
+  0px wide and called `Array(Infinity)` ("Invalid array length"), killing the
+  page under reduced motion. Guarded in place (LOCAL PATCH comment).
+- Missing `favicon.ico` still 404s; add one to `app/`.
+
+---
+
 # READ THIS FIRST — follow-up 3, 23 Sep 2026
 
 - **Caption scope clarified by the owner:** removed = bento tile source lines,
