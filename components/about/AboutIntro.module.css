@@ -1,0 +1,45 @@
+.section { padding: clamp(7rem, 14vh, 10rem) var(--gutter) clamp(4rem, 9vh, 7rem); }
+.shell { max-width: var(--shell); margin: 0 auto; }
+
+.eyebrow {
+  margin: 0 0 clamp(20px, 3vh, 32px);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-fg);
+}
+
+.heading {
+  margin: 0 0 clamp(40px, 8vh, 84px);
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(2.75rem, 9vw, 7rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  /* Cobalt, explicitly — this section is always light, and the caption below
+     it is lime, so the two cannot both read --accent-fg. */
+  color: var(--brand-blue);
+}
+
+/* Offset into the right-hand column so the statement reads as the answer to
+   the headline rather than a continuation of it. */
+.body {
+  max-width: 62ch;
+  margin-left: auto;
+}
+
+.support {
+  margin: clamp(24px, 3.5vh, 36px) 0 0;
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  line-height: 1.65;
+  /* Cobalt, like the heading. Was lime for one pass, which is 1.2:1 on this
+     ground; the deliberate-exception note that used to sit here is gone with
+     it, and the site now has no text below AA anywhere. */
+  color: var(--brand-blue);
+}
+
+@media (max-width: 899px) {
+  .body { margin-left: 0; }
+}

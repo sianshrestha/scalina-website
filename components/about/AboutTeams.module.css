@@ -1,0 +1,385 @@
+/* Two specialist teams, one roof — one pinned stage, two moves.
+
+   Layer order is set with z-index, not with document order: the document order
+   is the order these read in when the pin is off (title block, then section),
+   and the paint has to sit on top when it is on. */
+
+.track {
+  /* Read back by the component to convert timeline fractions into trigger
+     lines, so the two cannot drift. The media query below is the only other
+     thing allowed to change it. */
+  --track-vh: 360;
+  position: relative;
+  height: calc(var(--track-vh) * 1vh);
+}
+
+/* Zero-size ground markers, positioned against the TRACK so they measure
+   progress through the pin. The stage is sticky and sits at top: 0 for the
+   whole of it, which measures nothing. */
+.mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.stage {
+  --beam-top: 25%;
+  --beam-h: 16%;
+  /* Content stays inside the shell on wide screens without a wrapper element
+     in the middle of the clip stack. */
+  --edge: max(var(--gutter), calc((100% - var(--shell)) / 2 + var(--gutter)));
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: #F5F2F3;
+}
+
+/* Carries the size the heading SETTLES at, so the FLIP's factor is measured
+   rather than written down twice. The heading itself is laid out at the big
+   display size — see the note on `.heading`. */
+.probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: clamp(1.45rem, 3.1vw, 2.9rem);
+}
+
+/* ---- the cobalt ---------------------------------------------------------
+   `.paint` closes onto the band, `.mask` opens the circle. Two elements
+   because a clip cannot tween from a circle() to an inset() — they are
+   different shape functions, not different values of one. */
+
+.paint {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  clip-path: inset(0px 0% 0px 0%);
+  will-change: clip-path;
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-blue);
+  color: #F4F2ED;
+  /* The state before the timeline exists, and after a failed hydration. */
+  clip-path: circle(0% at 50% 50%);
+  will-change: clip-path;
+}
+
+/* The outgoing copy. Same box, same type, ink on the light ground. */
+.wipeFrom {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #F5F2F3;
+  color: #0B0D12;
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #F5F2F3;
+  color: #0B0D12;
+}
+
+/* ---- the band and its type ---------------------------------------------- */
+
+.beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--beam-top);
+  height: var(--beam-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(28px, 4vw, 72px);
+  /* The heading is out of flow (below), so the lede holds the right on its
+     own rather than being pushed there by `space-between`. */
+  justify-content: flex-end;
+  padding-inline: var(--edge);
+}
+
+/* Laid out at the DISPLAY size and scaled DOWN into the band — never the
+   other way round.
+   ------------------------------------------------------------------------
+   Type scaled UP by a transform is rasterised at its layout size and then
+   magnified, so the wipe's heading, drawn at the band's 45px and blown up
+   2.6x, arrived visibly soft against everything else on the screen. Drawn at
+   118px and taken down to 0.38 it is supersampled at every point of the
+   travel and sharp at both ends.
+
+   Out of flow so a 200px-tall heading does not set the height of a 140px
+   band, and `transform-origin: 0 0` so the FLIP's arithmetic is just the
+   element's own top-left corner. */
+.heading {
+  position: absolute;
+  left: var(--edge);
+  top: 0;
+  margin: 0;
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 8.2vw, 7.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.heading span { display: block; }
+
+.lede {
+  margin: 0;
+  max-width: 46ch;
+  text-align: right;
+  font-size: clamp(0.94rem, 1.15vw, 1.1rem);
+  line-height: 1.5;
+  color: #DDE3FF;
+}
+
+/* ---- the two streams ----------------------------------------------------
+   Drawn twice. On the light ground they are a texture at the edge of visible;
+   inside the cobalt they read. Same markup, same animation, started in the
+   same commit, so a word crossing the beam appears to light up rather than to
+   be replaced. */
+
+@keyframes vmarq {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -50%, 0); }
+}
+
+.streams { position: absolute; inset: 0; display: flex; }
+.column { position: relative; flex: 1 1 50%; overflow: hidden; }
+
+.vtrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: vmarq 44s linear infinite;
+  will-change: transform;
+}
+
+.vword {
+  /* Padding, not gap: the track is translated by exactly -50%, and a gap adds
+     one interval more than two copies of the list account for. */
+  padding: 14px 0;
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 5.6vw, 5.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.base { color: rgba(11, 13, 18, 0.05); }
+/* Low enough that the beam's own lede reads across it. The streams are the
+   texture the beam is passing over, not a second thing to read. */
+.lit { color: rgba(244, 242, 237, 0.15); }
+
+/* ---- the two columns ---------------------------------------------------- */
+
+.cards {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--beam-top) + var(--beam-h) + 4vh);
+  bottom: clamp(20px, 4vh, 48px);
+  padding-inline: var(--edge);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4.5vw, 80px);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 3.2vw, 52px);
+  border-radius: 40px;
+  overflow: hidden;
+  /* No transform transition or hover lift: the pinned timeline scrubs these
+     cards' y, and a CSS transition on the same property made them trail the
+     scroll (the fade "glitch"). */
+}
+/* Same language as the homepage Scalina System stage cards: big rounded
+   blocks of brand colour, a large title, services as pills. */
+.card[data-team='01'] {
+  background: #CDF22B;
+  color: #0B0D12;
+  --card-accent: #0B0D12;
+  --card-mute: rgba(11, 13, 18, 0.72);
+}
+.card[data-team='02'] {
+  background: #0B0D12;
+  color: #F4F2ED;
+  --card-accent: #CDF22B;
+  --card-mute: rgba(244, 242, 237, 0.68);
+}
+
+.cardHead { display: flex; align-items: baseline; gap: 14px; }
+.cardName {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3.2vw, 2.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.character {
+  margin: clamp(8px, 1.4vh, 14px) 0 0;
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  line-height: 1.25;
+  color: var(--card-accent);
+}
+.card[data-team='01'] .character { color: rgba(11, 13, 18, 0.72); }
+
+.cardBody {
+  margin: clamp(14px, 2vh, 22px) 0 0;
+  max-width: 44ch;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.55;
+  color: var(--card-mute);
+}
+
+.services {
+  list-style: none;
+  margin: clamp(18px, 3vh, 32px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.service {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  transition: background-color var(--d-move), color var(--d-move), transform var(--d-move) var(--ease-back);
+}
+/* The pill fills with the card's ink and takes the card's colour as its text,
+   the same inversion the Scalina System tags use. */
+.card[data-team='01'] .service:hover,
+.card[data-team='01'] .service:focus-visible { background: #0B0D12; color: #CDF22B; transform: translateY(-2px); }
+.card[data-team='02'] .service:hover,
+.card[data-team='02'] .service:focus-visible { background: #CDF22B; color: #0B0D12; transform: translateY(-2px); }
+
+.serviceArrow {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: width var(--d-move) var(--ease-out-expo), opacity var(--d-state);
+}
+.service:hover .serviceArrow,
+.service:focus-visible .serviceArrow { width: 1em; opacity: 1; }
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: clamp(16px, 3vh, 32px);
+  color: inherit;
+  font-size: 0.98rem;
+  font-weight: 500;
+  transition: gap var(--d-move) var(--ease-out-expo), opacity var(--d-state);
+}
+.cardLink:hover { gap: 16px; opacity: 0.75; }
+
+/* The card's supporting paragraph is the first thing to go when the stage is
+   short — five service rows and the link are the part that is being looked
+   for. It is still in the markup and still read out. */
+@media (max-height: 880px) {
+  .cardBody { display: none; }
+}
+
+/* ---- flattened: narrow, or motion turned down --------------------------- */
+
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .track { --track-vh: 100; height: auto; }
+  .stage { position: static; height: auto; overflow: visible; }
+  .probe, .wipeFrom, .streams { display: none; }
+
+  .paint {
+    position: relative;
+    inset: auto;
+    clip-path: none;
+    min-height: 100svh;
+    display: flex;
+  }
+  .mask {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    clip-path: none;
+    display: flex;
+  }
+  .beam {
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: 100svh;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(20px, 4vh, 36px);
+    padding-block: clamp(4rem, 14vh, 9rem);
+  }
+  .heading {
+    position: static;
+    font-size: clamp(2.2rem, 11vw, 4.4rem);
+    transform: none !important;
+  }
+  .lede { text-align: left; }
+
+  .world { position: relative; inset: auto; }
+  .cards {
+    position: relative;
+    inset: auto;
+    top: auto;
+    bottom: auto;
+    grid-template-columns: 1fr;
+    padding-block: clamp(3rem, 9vh, 6rem);
+  }
+  .cardBody { display: block; }
+  .service { min-height: 44px; }
+  .card { border-radius: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The global rule collapses the duration, which would park the track
+     mid-list. Dropping the name leaves it at rest instead. */
+  .vtrack { animation-name: none; }
+  .service, .serviceArrow { transition: none; }
+}
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.service { min-height: 44px; }
+.cardLink { min-height: 44px; }

@@ -1,0 +1,114 @@
+/* Frames for case-study media. Read ground tokens so the same frame sits on a
+   light case page and on a dark homepage band. */
+
+.figure { margin: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.img { display: block; width: 100%; height: auto; }
+
+/* ---- browser ----------------------------------------------------------- */
+.browser {
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 30px 60px -30px rgba(11, 13, 18, 0.35);
+}
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+}
+.dots { display: flex; gap: 6px; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.url {
+  flex: 1;
+  max-width: 320px;
+  margin-inline: auto;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--scrim);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.viewport { background: #fff; }
+
+/* ---- phone ------------------------------------------------------------- */
+.phone {
+  padding: 8px;
+  border-radius: 42px;
+  background: #0B0D12;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 30px 60px -28px rgba(11, 13, 18, 0.5);
+}
+.screen {
+  overflow: hidden;
+  border-radius: 34px;
+  aspect-ratio: 9 / 19.5;
+  background: #000;
+}
+.screen { position: relative; }
+.screen .img { height: 100%; object-fit: cover; object-position: top; }
+
+/* The whole screen opens the full edit; the pill says so. It rises in on
+   hover, and is always shown where there is no hover. */
+.watch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 24px;
+  border: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.45));
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--d-move) var(--ease-standard);
+}
+.watch:hover, .watch:focus-visible { opacity: 1; }
+.watchPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  background: #F4F2ED;
+  color: #0B0D12;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transform: translateY(8px);
+  transition: transform var(--d-open) var(--ease-out-expo);
+}
+.watch:hover .watchPill, .watch:focus-visible .watchPill { transform: none; }
+@media (hover: none) {
+  .watch { opacity: 1; }
+  .watchPill { transform: none; }
+}
+
+/* ---- poster ------------------------------------------------------------ */
+.poster {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 24px 48px -28px rgba(11, 13, 18, 0.55);
+}
+
+.bare { display: grid; place-items: center; }
+
+.caption,
+.sample {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

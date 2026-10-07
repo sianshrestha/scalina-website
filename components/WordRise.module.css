@@ -1,0 +1,12 @@
+/* The mask is taller than the line box on both sides (and pulled back with
+   negative margins) so descenders, accents and condensed caps at a sub-1
+   line-height are never cropped. */
+.line { display: block; }
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.1em 0.04em 0.22em;
+  margin: -0.1em -0.04em -0.22em;
+  vertical-align: top;
+}
+.word { display: inline-block; will-change: transform; }

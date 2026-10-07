@@ -1,0 +1,41 @@
+/* The wall. Columns are taller than the wall and centred in it, so they
+   overflow top and bottom by the same amount — that overflow is the travel
+   the component measures. Tile heights come from each tile's own aspect ratio
+   (set by the caller), not from the column. */
+
+.gallery {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 2vw;
+  height: 120vh;
+  padding: 0 2vw;
+  overflow: hidden;
+}
+
+.column {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2vw;
+  will-change: transform;
+}
+
+.tile {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+@media (max-width: 899px) {
+  .gallery { height: 100vh; gap: 12px; padding: 0 12px; }
+  .column { gap: 12px; }
+  .column[data-col='2'], .column[data-col='3'] { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery { height: auto; align-items: flex-start; }
+}

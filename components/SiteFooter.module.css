@@ -1,0 +1,124 @@
+.footer { position: relative; padding: clamp(4rem, 10vh, 9rem) 0 0; overflow: hidden; }
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 5.5vw, 104px);
+  column-gap: clamp(40px, 7vw, 140px);
+  align-items: start;
+}
+
+.blurb {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+.column { display: flex; flex-direction: column; gap: clamp(12px, 1.6vh, 18px); }
+.columnTitle {
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--muted);
+}
+.columnLink { font-size: clamp(1rem, 1.3vw, 1.15rem); transition: color var(--d-state); }
+.columnLink:hover { color: var(--muted); }
+
+.social {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 32px;
+  margin-top: clamp(72px, 16vh, 160px);
+}
+.socialList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(10px, 1.4vh, 16px);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+}
+
+.wordmarkWrap {
+  position: relative;
+  overflow: hidden;
+  container-type: inline-size;
+  max-width: var(--shell);
+  margin: -75px auto 0;
+  padding: 0 var(--gutter) clamp(20px, 4vh, 44px);
+}
+/* Oswald caps, not Fraunces title case — the footer wordmark and the hero
+   wordmark are the same object and were reading as two different brands.
+
+   The size is NOT a like-for-like port, and it moves DOWN, not up. Measured at
+   a 1440px container: Fraunces 350 "Scalina" at 32cqi renders 1162px wide, so
+   the wordmark sits ~19% inside the wrap and never touches the overflow clip.
+   Oswald 700 "SCALINA" is considerably wider at the same size — 1541px, or 7%
+   past the edge — because the caps are wide and there are no lowercase letters
+   to pull the average down. 24cqi puts it back at ~1156px, reproducing the
+   original composition. If the shell width changes, re-measure; do not assume
+   the two faces scale together. */
+.wordmark {
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-size: 24cqi;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 0.86;
+  color: var(--text);
+  white-space: nowrap;
+  margin-left: -0.03em;
+  opacity: 0.25;
+  will-change: transform, opacity;
+}
+
+.copyright {
+  display: flex;
+  justify-content: flex-end;
+  padding: clamp(10px, 2vh, 22px) 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@media (max-width: 899px) {
+  .columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wordmarkWrap { margin-top: 0; }
+}
+@media (max-width: 599px) {
+  .columns { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark { opacity: 0.9; transform: none !important; }
+}
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.columnLink { position: relative; }
+.columnLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 44px;
+  height: 100%;
+}

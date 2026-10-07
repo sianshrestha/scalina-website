@@ -1,0 +1,40 @@
+/* Port of Skiper UI skiper58's Tailwind classes. Upstream sets line-height 0.75
+   inline; here the consumer's type controls it and the layers just fill. */
+
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.layers { display: block; position: relative; }
+.layer { display: block; white-space: nowrap; }
+
+/* The incoming copy sits exactly over the resting one and starts a full line
+   below it, so the two read as one strip rolling upward. */
+.layerIncoming { position: absolute; inset: 0; }
+
+.char { display: inline-block; }
+
+/* Under reduced motion the rolling layers are removed from the layout entirely
+   and a plain static copy takes their place — a per-character roll is the exact
+   effect the preference is asking us not to run. */
+.reducedOnly { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .layers { display: none; }
+  .reducedOnly { display: inline; }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

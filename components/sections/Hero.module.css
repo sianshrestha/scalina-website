@@ -1,0 +1,166 @@
+/* Hero geometry. The opening sequence it belongs to is documented in Hero.tsx.
+
+   Every "before" state below is deliberately in CSS rather than set from JS:
+   the server-rendered first paint has to already be black with no chrome, and
+   an effect that sets it runs a frame too late. GSAP only animates away from
+   these. The no-JS fallback that resolves them is in layout.tsx. */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #08080A;
+}
+
+/* z0 — full-bleed, always painted. The curtains hide it; nothing clips it.
+
+   The gradient is not decoration, it is what makes the reveal legible. The
+   reference opens its curtains onto a lit photograph; LiquidEther's canvas is
+   transparent (`alpha: true`, clear alpha 0) and starts with no fluid in it, so
+   without something painted underneath the curtains part to show the same black
+   they were made of and the whole effect reads as nothing happening. This is
+   the ground the fluid then moves over. */
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(80% 60% at 50% 46%, #17171C 0%, #101014 52%, #0A0A0D 100%);
+}
+
+/* z1 — keeps the wordmark readable wherever the fluid is bright, and sinks the
+   corners so the marquee and header sit on a settled ground. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(125% 85% at 50% 45%, rgba(8, 8, 10, 0) 52%, rgba(8, 8, 10, 0.34) 100%),
+    linear-gradient(to bottom, rgba(8, 8, 10, 0.45) 0%, rgba(8, 8, 10, 0) 22%, rgba(8, 8, 10, 0) 72%, rgba(8, 8, 10, 0.72) 100%);
+}
+
+/* z2 — the two panels that make the page black on arrival. They slide out to
+   their own edges; they are not a clip. */
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 2;
+  background: #08080A;
+  will-change: transform;
+}
+.curtainLeft { left: 0; }
+.curtainRight { right: 0; }
+
+/* ---- wordmark ---------------------------------------------------------- */
+/* z3 — above both curtains, which is why the letters are legible against the
+   black before the field is uncovered. Starts 200px low and invisible. */
+.textWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(96px, 14vh, 150px) var(--gutter) clamp(150px, 22vh, 240px);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(200px);
+  will-change: transform, opacity;
+}
+
+/* Sized so a seven-letter word spans roughly the share of the viewport that
+   the reference's twelve-letter one does. */
+.mark {
+  position: relative;
+  display: block;
+  margin: 0;
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: clamp(3.25rem, 21vw, 20rem);
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.markFill {
+  display: block;
+  color: var(--text);
+  /* Opens from the centre on the same duration and ease as the curtains. */
+  clip-path: inset(0% 50% 0% 50%);
+}
+
+/* Exactly over the fill — same box, same metrics, no offset of its own. */
+.markOutline {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text);
+  text-stroke: 1px var(--text);
+}
+
+/* At hero scale a 1px stroke goes wiry on wide screens. */
+@media (min-width: 1600px) {
+  .markOutline {
+    -webkit-text-stroke-width: 1.5px;
+    text-stroke-width: 1.5px;
+  }
+}
+
+/* ---- client marquee ---------------------------------------------------- */
+/* Below the curtains (z2), so the wipe uncovers it exactly the way it uncovers
+   the field. That is the whole mechanism — it has no animation of its own, and
+   it must not be given one: fading it in on top of the curtains would read as
+   a second, competing entrance. Only the fixed header still fades, because it
+   sits outside this section and cannot be wiped by these panels. */
+.clients {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(28px, 5vh, 56px);
+  z-index: 1;
+}
+.clientsLabel {
+  display: block;
+  margin: 0 0 clamp(16px, 2.4vh, 26px);
+  padding: 0 var(--gutter);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-fg);
+  text-align: center;
+}
+
+/* Client wordmarks stand in until real logo files land. */
+.clientMark {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  opacity: 0.62;
+  transition: opacity var(--d-state), color var(--d-state);
+}
+.clientMark:hover { opacity: 1; color: var(--accent-fg); }
+
+@media (max-width: 767px) {
+  .mark { font-size: clamp(3rem, 23vw, 7rem); }
+  .textWrap { padding-top: clamp(88px, 13vh, 120px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clientMark { transition: none; }
+}

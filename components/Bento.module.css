@@ -1,0 +1,165 @@
+/* Bento grid of figures. Four columns on desktop; `big` cells are 2×2 and
+   `wide` 2×1, and `dense` packing closes the gaps they leave. */
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(220px, auto);
+  grid-auto-flow: dense;
+  gap: 12px;
+}
+.cell { min-width: 0; display: flex; }
+.cell[data-span='big'] { grid-column: span 2; grid-row: span 2; }
+.cell[data-span='wide'] { grid-column: span 2; }
+.cell[data-span='tall'] { grid-row: span 2; }
+
+.tile {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: transform var(--d-open) var(--ease-out-expo), box-shadow var(--d-state);
+}
+a.tile:hover { transform: translateY(-4px); }
+a.tile:focus-visible { outline-offset: 4px; }
+
+.tile[data-tone='ink'] { background: #0B0D12; color: #F4F2ED; box-shadow: none; }
+.tile[data-tone='accent'] { background: var(--accent-bg); color: var(--accent-bg-fg); box-shadow: none; }
+.tile[data-tone='panel'] { background: var(--bg); }
+.tile[data-pending] { background: transparent; box-shadow: 0 0 0 1px var(--line); }
+.tile[data-pending] .content { opacity: 0.7; }
+
+/* The pointer light. */
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(360px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.16), transparent 60%);
+  transition: opacity var(--d-move);
+}
+.tile:hover .glow { opacity: 1; }
+.tile:not([data-tone]) .glow,
+.tile[data-tone='panel'] .glow { background: radial-gradient(360px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent-fg) 12%, transparent), transparent 60%); }
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: clamp(20px, 2.2vw, 30px);
+}
+.value {
+  font-size: clamp(2.6rem, 4.6vw, 4.2rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+}
+.tile:not([data-tone]) .value,
+.tile[data-tone='panel'] .value { color: var(--accent-fg); }
+.cell[data-span='big'] .value { font-size: clamp(4rem, 9vw, 8.6rem); }
+
+.label { margin-top: auto; max-width: 30ch; font-size: 0.98rem; line-height: 1.4; }
+.cell[data-span='big'] .label { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+
+.list { display: flex; flex-wrap: wrap; gap: 6px; }
+.list span {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px currentColor;
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+
+.dash {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.07em;
+  vertical-align: 0.28em;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px currentColor;
+  opacity: 0.5;
+  transition: transform var(--d-open) var(--ease-out-expo), opacity var(--d-state);
+}
+a.tile:hover .arrow { transform: rotate(45deg); opacity: 1; }
+
+/* ---- media ------------------------------------------------------------- */
+.video { position: absolute; inset: 0; z-index: 0; }
+.video video { width: 100%; height: 100%; object-fit: cover; transition: transform var(--d-stage) var(--ease-out-expo); }
+.tile:hover .video video { transform: scale(1.04); }
+.tile[data-media='video']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(11, 13, 18, 0.15) 0%, rgba(11, 13, 18, 0.2) 40%, rgba(11, 13, 18, 0.88) 100%);
+}
+
+/* A screenshot sitting in the corner of the tile, tilted slightly back. */
+.shot {
+  position: absolute;
+  right: -6%;
+  bottom: -22%;
+  z-index: 0;
+  width: 56%;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+  transform: perspective(1200px) rotateY(-10deg) rotateX(6deg);
+  transition: transform var(--d-stage) var(--ease-out-expo);
+}
+.shot img { display: block; width: 100%; height: auto; }
+.tile:hover .shot { transform: perspective(1200px) rotateY(-4deg) rotateX(2deg) translateY(-8px); }
+.tile[data-media='image'] .content { max-width: 46%; }
+/* In a big cell the screenshot sits high and to the right, and the ink
+   fades up over its lower edge so the label and list below stay readable. */
+.cell[data-span='big'] .tile[data-media='image'] .shot { width: 84%; top: 22%; bottom: auto; right: -18%; }
+.cell[data-span='big'] .tile[data-media='image'] .content { max-width: none; }
+.cell[data-span='big'] .tile[data-media='image']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(0deg, #0B0D12 34%, rgba(11, 13, 18, 0) 72%);
+}
+
+@media (max-width: 1023px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 599px) {
+  .grid { grid-template-columns: 1fr; grid-auto-rows: minmax(180px, auto); }
+  .cell[data-span='big'],
+  .cell[data-span='wide'] { grid-column: auto; }
+  .cell[data-span='big'] { grid-row: span 2; }
+  .tile[data-media='image'] .content,
+  .cell[data-span='big'] .tile[data-media='image'] .content { max-width: none; }
+  .shot { opacity: 0.35; }
+}

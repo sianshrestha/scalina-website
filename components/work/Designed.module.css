@@ -1,0 +1,183 @@
+/* Drawn case-study media. Keyframes live here, not in globals.css — CSS
+   Modules localises animation-name, so a global keyframe would silently never
+   run (HANDOFF.md, trap 1). */
+
+/* ---- DM flow ----------------------------------------------------------- */
+.dm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(24px, 4vw, 56px);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.step {
+  display: grid;
+  grid-template-columns: 40px 110px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.stepIndex {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.stepKey { font-weight: 600; letter-spacing: -0.01em; }
+.stepVal { color: var(--muted); font-size: 0.95rem; }
+.step:last-child { background: var(--accent-bg); color: var(--accent-bg-fg); box-shadow: none; }
+.step:last-child .stepIndex,
+.step:last-child .stepVal { color: inherit; opacity: 0.8; }
+
+.chatPhone {
+  border-radius: 28px;
+  padding: 14px;
+  background: #0B0D12;
+  color: #F4F2ED;
+  box-shadow: 0 30px 60px -30px rgba(11, 13, 18, 0.55);
+}
+.chatHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 14px;
+  border-bottom: 1px solid rgba(244, 242, 237, 0.1);
+  font-size: 0.85rem;
+}
+.chatHead strong { display: block; font-weight: 600; }
+.chatHead em { font-style: normal; font-size: 0.75rem; color: #8FD694; }
+.avatar {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.clock { margin-left: auto; font-size: 0.72rem; opacity: 0.6; }
+.chat { list-style: none; margin: 0; padding: 14px 4px 4px; display: flex; flex-direction: column; gap: 8px; min-height: 280px; }
+.chat li { max-width: 86%; padding: 10px 14px; border-radius: 18px; font-size: 0.86rem; line-height: 1.4; }
+.them { align-self: flex-start; background: rgba(244, 242, 237, 0.1); border-bottom-left-radius: 6px; }
+.bot { align-self: flex-end; background: var(--brand-blue); border-bottom-right-radius: 6px; }
+
+/* ---- Voice call -------------------------------------------------------- */
+.call {
+  display: grid;
+  gap: 24px;
+  padding: clamp(24px, 4vw, 48px);
+  border-radius: 18px;
+  background: #0B0D12;
+  color: #F4F2ED;
+}
+.callHead { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+.live { width: 10px; height: 10px; border-radius: 50%; background: #3DDC84; animation: pulse 1.6s ease-in-out infinite; }
+.callTitle { font-weight: 500; }
+.callTime { margin-left: auto; font-family: var(--font-plex-mono), monospace; font-size: 0.8rem; opacity: 0.6; }
+
+.wave { display: flex; align-items: center; gap: 4px; height: 72px; }
+.wave i {
+  flex: 1;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--brand-accent), var(--brand-blue));
+  transform-origin: center;
+  animation: bar 1.2s ease-in-out infinite;
+}
+
+.transcript { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.transcript li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; font-size: 0.95rem; line-height: 1.5; }
+.transcript li span {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  padding-top: 4px;
+}
+.transcript li[data-who='Agent'] { color: var(--brand-accent); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes bar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+/* ---- Cadence ----------------------------------------------------------- */
+.cadence {
+  padding: clamp(24px, 4vw, 48px);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.cadenceGrid { display: grid; gap: clamp(6px, 1vw, 14px); align-items: end; }
+.week { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.dots { display: flex; flex-direction: column-reverse; gap: 6px; }
+.dot { width: clamp(10px, 1.6vw, 18px); aspect-ratio: 1; border-radius: 50%; background: var(--accent-fg); }
+.weekLabel { font-family: var(--font-plex-mono), monospace; font-size: var(--t-label-sm); color: var(--muted); }
+.cadenceNote { margin: 24px 0 0; color: var(--muted); }
+.cadenceNote strong { color: var(--text); font-weight: 600; }
+
+/* ---- UGC cover --------------------------------------------------------- */
+.ugc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(80% 60% at 30% 20%, rgba(30, 69, 251, 0.55), transparent 70%),
+    radial-gradient(70% 60% at 80% 90%, rgba(205, 242, 43, 0.28), transparent 70%),
+    #0B0D12;
+  color: #F4F2ED;
+}
+.ugcLabel { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 500; letter-spacing: -0.04em; }
+.rec {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.14em;
+}
+.rec i { width: 8px; height: 8px; border-radius: 50%; background: #FF4D4D; animation: pulse 1.4s ease-in-out infinite; }
+.ugcTag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(244, 242, 237, 0.3);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.14em;
+}
+.bar { position: absolute; left: 18px; right: 18px; bottom: 18px; height: 3px; border-radius: 3px; background: rgba(244, 242, 237, 0.18); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 100%; background: #F4F2ED; transform-origin: left; animation: progress 6s linear infinite; }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (max-width: 899px) {
+  .dm { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 32px 90px minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live, .wave i, .rec i, .bar i { animation: none; }
+}

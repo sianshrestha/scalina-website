@@ -1,0 +1,49 @@
+.flowSection { padding: clamp(4rem, 10vh, 8rem) var(--gutter) clamp(5rem, 12vh, 10rem); }
+.flowShell { max-width: var(--shell); margin: 0 auto; }
+
+/* The alternative for people who will not fill in a form, kept small and after
+   the flow rather than beside it — offering both at once loses most of them to
+   the easier one. */
+.direct { padding: clamp(5rem, 12vh, 9rem) var(--gutter) clamp(3rem, 7vh, 5rem); text-align: center; }
+.directShell { max-width: var(--shell); margin: 0 auto; }
+
+.directList {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px clamp(24px, 5vw, 64px);
+  margin: 0;
+  padding: 0;
+}
+
+.directLink {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+  transition: border-color var(--d-state), color var(--d-state);
+}
+.directLink:hover { color: var(--brand-accent); border-color: var(--brand-accent); }
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.directLink { position: relative; }
+.directLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 44px;
+  height: 100%;
+}

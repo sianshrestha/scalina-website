@@ -1,0 +1,61 @@
+/* Closing call to action — one heading, one button. */
+
+.section {
+  padding: clamp(7rem, 16vh, 15rem) var(--gutter) clamp(6rem, 13vh, 12rem);
+}
+
+.shell {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  /* A step below .sectionHeading on purpose. This one is always at least two
+     lines — the muted question sits on its own line above the answer — so at
+     the section-heading scale it ran to three lines beside the button and
+     swamped the CTA it is supposed to be introducing. */
+  font-size: clamp(1.6rem, 3.36vw, 3rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.headingMuted { color: var(--muted); display: block; }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 68px;
+  padding: 0 40px;
+  border-radius: 9999px;
+  background: var(--brand-accent);
+  color: #0C0C0F;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-lg);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: filter var(--d-state), transform var(--d-move) var(--ease-back);
+}
+.cta:hover { filter: brightness(1.08); color: #0C0C0F; transform: translateX(4px); }
+.ctaArrow { transition: transform var(--d-move) var(--ease-back); }
+.cta:hover .ctaArrow { transform: translateX(4px); }
+
+
+@media (max-width: 899px) {
+  .shell { grid-template-columns: 1fr; align-items: start; }
+  .cta { height: 60px; padding: 0 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta, .ctaArrow { transition: none; }
+  .cta:hover, .cta:hover .ctaArrow { transform: none; }
+}

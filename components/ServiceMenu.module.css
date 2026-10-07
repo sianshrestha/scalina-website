@@ -1,0 +1,72 @@
+/* Wrapper that fits React Bits' FlowingMenu into the What We Do rhythm.
+
+   FlowingMenu ships global class names and sizes itself off the viewport
+   (4vh type, a 200px marquee image). These :global overrides bring it down to
+   the row scale the section uses and point its colours at the ground tokens,
+   so it inverts with the rest of the page. */
+
+.wrap {
+  width: 100%;
+  height: calc(var(--rows, 3) * clamp(62px, 7.4vh, 84px));
+}
+
+.wrap :global(.menu__item) { border-color: var(--line); }
+
+.wrap :global(.menu__item-link) {
+  justify-content: flex-start;
+  padding-left: calc(var(--edge) + 0.3 * var(--content) + var(--col-gap));
+  padding-right: var(--edge);
+  /* A tracked-out uppercase service name is a label, so it takes the label
+     face (DESIGN.md §2) — it was Inter Tight, which is the one thing that face
+     is never used for. Same reasoning, and the same :global route, as the
+     OptionWheel override in ServiceExplorer: the component is vendored
+     verbatim, so it gets styled from here rather than forked. */
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: clamp(0.8rem, 1.02vw, 0.92rem);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  transition: color var(--d-state);
+}
+.wrap :global(.menu__item-link):hover { color: var(--accent-fg); }
+
+.wrap :global(.marquee span) {
+  /* Mirrors the row it slides over, so it tracks the row's type exactly. */
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: clamp(0.8rem, 1.02vw, 0.92rem);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  padding: 0 clamp(16px, 1.6vw, 30px);
+}
+
+/* The design's brand-blue chip, not a photo — real imagery can replace this. */
+.wrap :global(.marquee__img) {
+  width: 104px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border-radius: 9999px;
+  background: rgba(0, 74, 173, 0.13);
+  border: 1px solid rgba(0, 74, 173, 0.20);
+}
+
+/* Rows are full-bleed so the hairlines run edge to edge, exactly as the design
+   file had them; only the label is constrained. These two values reproduce the
+   30/70 grid the rest of the section uses, so a service name lines up under the
+   pillar heading ("Content", "Growth", "Technology") rather than sitting out at
+   the far left of the page. */
+.inner {
+  --edge: max(var(--gutter), calc((100vw - var(--shell)) / 2 + var(--gutter)));
+  --content: calc(min(100vw, var(--shell)) - 2 * var(--gutter));
+  /* Must match the column gap on .split3070, or the label lands short of the
+     heading by exactly that gap. */
+  --col-gap: clamp(16px, 4vw, 56px);
+}
+
+/* The 30/70 grid collapses on small screens, so the indent goes with it. */
+@media (max-width: 767px) {
+  .wrap :global(.menu__item-link) { padding-left: var(--edge); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap :global(.marquee) { display: none; }
+}

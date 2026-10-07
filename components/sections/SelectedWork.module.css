@@ -1,0 +1,33 @@
+/* Latest work — heading, parallax wall, link out. Nothing else by request:
+   the per-card title/discipline/description block that used to sit under every
+   tile is gone. */
+
+.section { padding: clamp(6rem, 14vh, 14rem) 0; }
+.shell { max-width: var(--shell); margin: 0 auto; padding-inline: var(--gutter); }
+
+.heading {
+  margin: 0 0 clamp(3rem, 7vh, 6rem);
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(3rem, 10vw, 9rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  text-align: center;
+  color: var(--accent-fg);
+}
+
+/* A real piece of Media output, cropped to the column's ragged height. */
+.tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background: #0B0D12;
+}
+.tileImg { object-fit: cover; transition: transform var(--d-stage) var(--ease-out-expo); }
+.tile:hover .tileImg { transform: scale(1.04); }
+.tile video { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.footerCta { display: flex; justify-content: center; margin-top: clamp(40px, 7vh, 72px); }

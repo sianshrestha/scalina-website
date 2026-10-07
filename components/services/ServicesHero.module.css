@@ -1,0 +1,124 @@
+/* Services hero — one huge Inter Tight line per team, at the scale the
+   reference sets (128px at 1440, light weight, roughly half-width). */
+
+.hero {
+  position: relative;
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(140px, 20vh, 200px) var(--gutter) clamp(48px, 8vh, 88px);
+}
+
+.shell { width: 100%; max-width: var(--shell); margin: 0 auto; }
+
+/* Eyebrow on the left, switch on the page's centre line. */
+.topRow {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  margin-bottom: clamp(28px, 4vh, 44px);
+}
+.copy { min-width: 0; }
+
+.eyebrow {
+  display: block;
+  margin: 0;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  /* Plain ink: the headline below carries the brand colour now. */
+  color: var(--text);
+}
+
+.headline {
+  margin: 0;
+  max-width: 21ch;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(2.25rem, 6.6vw, 6rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  /* The brand colour sits on the headline, not the lede (owner's call). It
+     steps with the ground: cobalt on Media's light page, lime on Systems'
+     dark one. */
+  color: var(--accent-fg);
+}
+
+.lede {
+  margin: clamp(32px, 5vh, 52px) 0 0;
+  max-width: 56ch;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+
+/* Team switch — a text control, not a card. The affordance is the label, the
+   rule under it, and the way that rule fills through on hover. A bordered box
+   here read as a panel of its own sitting next to the headline. */
+.switch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--d-state);
+}
+.switch:hover,
+.switch:focus-visible { color: var(--text); }
+
+.switchLabel { position: relative; display: inline-block; padding-bottom: 6px; }
+.switchLabel::before,
+.switchLabel::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+}
+.switchLabel::before { background: var(--line); }
+.switchLabel::after {
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-open) var(--ease-out-expo);
+}
+.switch:hover .switchLabel::after,
+.switch:focus-visible .switchLabel::after { transform: scaleX(1); }
+
+/* The team you would land on, so the label is not the only signal. */
+.switchTarget { color: var(--text); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  .switch, .switchLabel::after { transition: none; }
+}
+
+@media (max-width: 899px) {
+  /* No room to centre it against the eyebrow; it drops under instead. */
+  .topRow { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .switch { position: static; transform: none; }
+}
+
+@media (max-width: 767px) {
+  .headline { max-width: none; }
+}
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.switch { min-height: 44px; }

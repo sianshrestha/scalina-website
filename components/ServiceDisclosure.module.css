@@ -1,0 +1,112 @@
+/* A pillar head — number, name, and the disclosure trigger on one line — plus
+   the collapsible rows underneath. */
+
+.head {
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 var(--gutter) clamp(20px, 3vh, 36px);
+  align-items: end;
+}
+.headSpaced { padding-top: clamp(4rem, 9vh, 7rem); }
+
+.number {
+  /* Display numeral, not a label — so Oswald, not Plex Mono. The mono rule in
+     DESIGN.md §2 is for tracked-out eyebrow numbers like the System stages, not
+     for a ghosted numeral running at 100px+. */
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(2.4rem, 6.4vw, 5.2rem);
+  font-weight: 500;
+  line-height: 1.04;
+  /* Full-strength brand colour, not a ghost. It only ever LOOKED solid
+     because the Reveal that used to wrap it finished by writing `opacity: 1`
+     inline over this rule; when the reveal went, the 0.3 underneath it showed
+     for the first time and read as a colour change. */
+  color: var(--accent-fg);
+  letter-spacing: -0.035em;
+  padding-bottom: 0.16em;
+}
+
+/* Name left, trigger right, sharing a baseline. `flex-wrap` is what keeps the
+   trigger on the line until there is genuinely no room for it. */
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 40px);
+  flex-wrap: wrap;
+}
+
+.name {
+  display: block;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(2.2rem, 6.8vw, 5.4rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  padding-bottom: 0.16em;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 0.36em;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color var(--d-state);
+}
+.trigger:hover,
+.trigger:focus-visible { color: var(--text); }
+
+/* A plus that becomes a minus — the usual disclosure affordance. */
+.icon { position: relative; width: 12px; height: 12px; flex-shrink: 0; }
+.icon::before,
+.icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: currentColor;
+  transition: transform var(--d-move) var(--ease-out-expo), opacity var(--d-move);
+}
+.icon::before { width: 12px; height: 1px; }
+.icon::after { width: 1px; height: 12px; }
+.iconOpen::after { transform: scaleY(0); opacity: 0; }
+
+/* Height is animated from the measured content, so it works with the
+   FlowingMenu's own viewport-derived row heights. */
+.panel {
+  overflow: hidden;
+  height: 0;
+  transition: height var(--d-open) var(--ease-out-expo), opacity var(--d-move);
+  opacity: 0;
+}
+.panelOpen { opacity: 1; }
+
+@media (max-width: 767px) {
+  .head { grid-template-columns: 1fr; }
+  .number { padding-bottom: 0; }
+  .nameRow { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .trigger { padding-bottom: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { transition: none; }
+  .icon::before, .icon::after { transition: none; }
+}
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.trigger { min-height: 44px; }

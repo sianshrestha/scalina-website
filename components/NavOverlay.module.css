@@ -1,0 +1,103 @@
+/* Full-screen menu. Same condensed face as the hero wordmark, same
+   outline-at-rest / fill-on-hover behaviour, so the menu and the hero read as
+   one piece of type rather than two components. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(88px, 12vh, 140px) var(--gutter) clamp(28px, 5vh, 56px);
+  background: #08080A;
+  color: #F4F2ED;
+  opacity: 0;
+  pointer-events: none;
+  /* Wipes down from the header rather than fading in flat. */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 620ms var(--ease-out-expo), opacity 240ms linear;
+}
+.open {
+  opacity: 1;
+  pointer-events: auto;
+  clip-path: inset(0 0 0 0);
+}
+
+/* skiper58's arrangement: centred, tight, stacked. Its demo centres the whole
+   column and lets the words set the width, which is why the items no longer
+   carry an index or sit on a shared left edge. */
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.4vh, 8px);
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
+.item {
+  position: relative;
+  display: block;
+  padding: clamp(2px, 0.5vh, 8px) 0;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 520ms var(--ease-out-expo), transform 620ms var(--ease-out-expo);
+}
+.open .item { opacity: 1; transform: none; }
+
+
+/* Outline at rest. The filled copy is the ::after, revealed left-to-right on
+   hover — one node, because unlike the hero this one never has to be clipped
+   and stroked independently at the same time. */
+.itemLabel {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-weight: 700;
+  /* Reference scale: a compact stacked list, not a full-bleed wordmark.
+     Was clamp(2.4rem, 8vw, 6.5rem), which filled the screen. */
+  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #F4F2ED;
+}
+/* The copy that rolls up from below. Fixed lime, not --accent-fg: this overlay
+   paints its own #08080A and does NOT follow the ground rhythm, so the ground
+   token could hand it cobalt (3.1:1) over a light page. */
+.itemLabel :global(.sc-roll-incoming) { color: var(--brand-accent); }
+
+.foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: var(--shell);
+  margin: clamp(36px, 7vh, 84px) auto 0;
+  padding-top: clamp(18px, 3vh, 28px);
+  border-top: 1px solid rgba(244, 242, 237, 0.12);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 400ms linear 320ms;
+}
+.open .foot { opacity: 1; }
+
+.footLink { color: #F4F2ED; }
+.footLink:hover { color: var(--brand-accent); }
+.footNote { color: rgba(244, 242, 237, 0.45); }
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .item, .foot { transition: opacity 120ms linear; }
+  .overlay { clip-path: none; }
+  .item { transform: none; }
+}
+

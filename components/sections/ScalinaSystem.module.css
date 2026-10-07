@@ -1,0 +1,184 @@
+.section { padding: clamp(6rem, 14vh, 14rem) var(--gutter); }
+
+/* Label left, argument right — the 30/70 rhythm the rest of the site uses, so
+   the eyebrow holds the far edge and the statement runs wide instead of being
+   squeezed into a 26ch column beside it. The stage list sits under the label,
+   which is the only column with room for it now. */
+.intro {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: grid;
+  /* 22%, not the house 30%: the statement asked for more of the row so it
+     settles on four lines at every desktop width (it wrapped to five). */
+  grid-template-columns: 22% minmax(0, 1fr);
+  gap: clamp(16px, 4vw, 56px);
+  /* Stretch, not start: the aside spans the statement's height so its two ends
+     line up with the statement's two ends. With `start` the column was as tall
+     as its own content and finished ~36px short, which read as the label block
+     floating rather than sitting against the argument. */
+  align-items: stretch;
+}
+
+/* Eyebrow at the top, stage list at the foot, level with the statement at both
+   ends. The 3px nudge is optical: an 11px label sits near the top of its line
+   box, a 44px statement sits ~8px down inside its 50px one, so matching the box
+   tops leaves the label visibly high. */
+/* The label column aligns to the statement's first and last lines, not to the
+   grid box. `space-between` alone left both ends floating against a statement
+   whose type is four times the size; the padding is the optical offset between
+   an 11px label sitting near the top of its line box and a 44px statement
+   sitting ~8px down inside its own. */
+.introAside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 0.55em;
+  padding-bottom: 0.35em;
+}
+
+/* Inherits the shared .statement scale; this only sets the measure. Wide
+   enough to break near the shell edge rather than wrapping every four words. */
+.body {
+  margin: 0;
+  max-width: none;
+  /* Sized in vw alongside the column, so the line count holds at four. */
+  font-size: clamp(1.4rem, 2.9vw, 2.6rem);
+}
+
+
+/* ---- the stack --------------------------------------------------------- */
+.stack {
+  max-width: var(--shell);
+  margin: clamp(4rem, 10vh, 9rem) auto 0;
+  padding-bottom: clamp(80px, 14vh, 180px);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(40px, 7vh, 88px);
+  min-height: clamp(360px, 48vh, 480px);
+  padding: clamp(28px, 3.4vw, 56px);
+  border-radius: 40px;
+  transform-origin: top center;
+  backface-visibility: hidden;
+}
+.card:not(:last-of-type) { margin-bottom: clamp(28px, 5vh, 64px); }
+
+.cardHead { display: flex; align-items: baseline; gap: clamp(16px, 2vw, 30px); }
+.cardNumber {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.18em;
+}
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(1.6rem, 3.52vw, 2.88rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.cardBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, auto);
+  gap: clamp(24px, 4vw, 72px);
+  align-items: end;
+}
+.cardCopy {
+  margin: 0;
+  max-width: 48ch;
+  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  line-height: 1.55;
+}
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(20px, 3vh, 34px);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: inherit;
+  transition: opacity var(--d-state);
+}
+.cardLink:hover { opacity: 0.68; color: inherit; }
+
+.tags { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 22px;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  color: inherit;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  transition: background-color var(--d-move), color var(--d-move), transform var(--d-move) var(--ease-back);
+}
+/* The arrow is folded away until the chip is pointed at, so the row reads as
+   labels at rest and as links the moment you go near one. */
+.tagArrow {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: max-width var(--d-move) var(--ease-out-expo), opacity var(--d-state), transform var(--d-move) var(--ease-out-expo), margin-left var(--d-move) var(--ease-out-expo);
+}
+.tag:hover,
+.tag:focus-visible {
+  background: currentColor;
+  transform: translateX(4px);
+}
+/* Inverting to the card's own background keeps every card legible without
+   knowing which of the four colours it is. */
+.tag:hover > span:first-child,
+.tag:focus-visible > span:first-child,
+.tag:hover .tagArrow,
+.tag:focus-visible .tagArrow { color: var(--card-bg); }
+.tag:hover .tagArrow,
+.tag:focus-visible .tagArrow {
+  max-width: 2em;
+  margin-left: 10px;
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag, .tagArrow { transition: none; }
+}
+
+.stackEnd { width: 100%; height: 1px; }
+
+/* Clear separation from whatever follows the stack. */
+.section { padding-bottom: clamp(7rem, 16vh, 15rem); }
+
+@media (max-width: 899px) {
+  .intro { grid-template-columns: 1fr; }
+  .cardBody { grid-template-columns: 1fr; }
+  .stack { padding-bottom: 0; }
+}
+
+
+/* ---- touch targets ------------------------------------------------------
+   DESIGN.md §5 sets a 44px floor and a 46px small button. These controls were
+   measured between 16.5px and 40px tall. Block controls take a real
+   `min-height`; inline links get an invisible hit area instead, because
+   growing a text link's box to 44px would open gaps in copy it sits inside.
+   Nothing below changes what anything looks like. */
+.tag { min-height: 44px; }
+.cardLink { position: relative; }
+.cardLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 44px;
+  height: 100%;
+}

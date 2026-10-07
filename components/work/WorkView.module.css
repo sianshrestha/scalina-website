@@ -1,0 +1,34 @@
+.intro { padding: clamp(9rem, 22vh, 14rem) var(--gutter) clamp(2.5rem, 6vh, 4rem); }
+.shell {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 16px clamp(24px, 4vw, 64px);
+}
+
+.eyebrow { grid-column: 1 / -1; margin: 0; }
+
+.heading {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.lede {
+  margin: 0;
+  max-width: 42ch;
+  justify-self: end;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+@media (max-width: 767px) {
+  .shell { grid-template-columns: 1fr; }
+  .lede { justify-self: start; }
+}

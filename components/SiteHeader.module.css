@@ -1,0 +1,117 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px var(--gutter);
+}
+
+/* The mark holds the left edge; the wordmark is centred on the page. Centring
+   is absolute rather than a grid column so it lands on the page's centre line
+   and not on the centre of whatever space the nav leaves. */
+.mark {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  transition: color 200ms linear;
+}
+
+.brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  transition: color 200ms linear;
+}
+.brandMark { display: block; overflow: visible; }
+.brandName {
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* The bar collapses to a single button on the way down and comes straight
+   back on the way up — see the scroll handler in SiteHeader.tsx. Reversing
+   direction is the gesture that restores it, not reaching the top. */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.2vw, 34px);
+  transition: opacity 320ms var(--ease-standard), transform 320ms var(--ease-standard);
+}
+.navHidden { opacity: 0; transform: translateX(24px); pointer-events: none; }
+
+.navLink {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 200ms;
+}
+/* The roll carries the hover now, so the link itself does not change colour —
+   two hover effects on one target read as a glitch. The incoming half of the
+   roll is the brand accent: ground-stepping, so it is lime over the dark hero
+   and cobalt over the light sections. */
+.navLink { display: inline-block; }
+.navLink :global(.sc-roll-incoming) { color: var(--accent-fg); }
+
+/* The brand mark and pill read --text/--line/--scrim, so the whole header
+   inverts with the ground under it. */
+.pill {
+  position: absolute;
+  right: var(--gutter);
+  top: 22px;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: var(--scrim);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  transition: opacity 320ms var(--ease-standard), transform 320ms var(--ease-standard);
+}
+.pillVisible { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+/* While the menu is open the header sits on the overlay's own ground, not the
+   page's — the overlay is always dark, whatever the page under it is doing. */
+.header[data-menu-open] .mark,
+.header[data-menu-open] .brand,
+.header[data-menu-open] .pill { color: #F4F2ED; }
+.header[data-menu-open] .pill {
+  border-color: rgba(244, 242, 237, 0.16);
+  background: rgba(244, 242, 237, 0.06);
+}
+
+/* The full nav is desktop-only; below that the button is the only affordance. */
+@media (max-width: 1023px) {
+  .nav { display: none; }
+  .pill { opacity: 1; transform: scale(1); pointer-events: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav, .pill { transition: none; }
+}
+

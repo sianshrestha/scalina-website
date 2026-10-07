@@ -1,0 +1,130 @@
+.section { padding: clamp(6rem, 14vh, 14rem) var(--gutter) clamp(4rem, 8vh, 8rem); }
+.shell { max-width: var(--shell); margin: 0 auto; }
+
+.lead {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+  gap: clamp(28px, 3vw, 44px);
+  margin: 0 0 clamp(3rem, 8vh, 7rem);
+}
+.leadText {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--text);
+  will-change: transform, opacity;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+  gap: clamp(28px, 3vw, 44px);
+  align-items: start;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0 0 clamp(24px, 3.6vh, 40px);
+}
+
+/* The label and title sit a little above the middle of the viewport. Dead
+   centre reads as low, because the client block underneath is part of the
+   same lockup and pulls the visual weight down. */
+.stickyBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(12px, 2vh, 22px);
+  padding: 34vh 0 clamp(20px, 4vh, 40px);
+}
+
+.featuredLabel {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 1.9vw, 1.75rem);
+  letter-spacing: -0.015em;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.projectName {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(1.8rem, 4.32vw, 4rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  max-width: 14ch;
+}
+
+/* Re-keyed on swap so the animation replays; the text is set before it plays
+   so the slot is never empty mid-scroll. */
+.swapIn { animation: shipped-swap var(--d-move) var(--ease-back) both; }
+@keyframes shipped-swap {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.clientRow { display: flex; align-items: center; gap: 14px; }
+.clientChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.clientMeta { display: flex; flex-direction: column; gap: 4px; }
+.clientLabel {
+  /* Tracked-out uppercase label → the label face, DESIGN.md §2. */
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-fg);
+}
+.clientName { font-size: 1rem; }
+
+.panels { display: flex; flex-direction: column; gap: clamp(24px, 5vh, 56px); }
+
+.panel {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.panelShot { position: absolute; inset: 0; overflow: hidden; }
+.panelShot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform var(--d-stage) var(--ease-out-expo);
+}
+.panel:hover .panelShot img { transform: scale(1.03); }
+.panelGlow { position: absolute; inset: 0; }
+
+.footerCta { display: flex; justify-content: flex-end; margin-top: clamp(32px, 6vh, 64px); }
+
+@media (max-width: 899px) {
+  .columns { grid-template-columns: 1fr; }
+  .stickyBody { padding-top: 0; }
+  .sticky { position: static; height: auto; }
+  .stickyBody { padding: 0 0 clamp(20px, 4vh, 40px); }
+  .lead { grid-template-columns: 1fr; }
+  .leadText { max-width: none; }
+}

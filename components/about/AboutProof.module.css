@@ -1,0 +1,23 @@
+.section { padding: clamp(5rem, 12vh, 9rem) var(--gutter) clamp(5rem, 12vh, 10rem); }
+.shell { max-width: var(--shell); margin: 0 auto; }
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 16px clamp(24px, 4vw, 64px);
+  margin-bottom: clamp(32px, 6vh, 56px);
+}
+.heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.note { margin: 0; max-width: 46ch; justify-self: end; font-size: 1.02rem; line-height: 1.6; color: var(--muted); }
+
+@media (max-width: 767px) {
+  .head { grid-template-columns: 1fr; }
+  .note { justify-self: start; }
+}

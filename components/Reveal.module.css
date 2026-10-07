@@ -1,0 +1,13 @@
+/* Reveals start hidden in CSS rather than in JS so there is no flash of
+   fully-styled content between SSR paint and hydration. */
+.reveal { opacity: 0; will-change: transform, opacity; }
+.lineMask { display: block; overflow: hidden; }
+.lineInner { display: block; opacity: 0; will-change: transform, opacity; }
+.clipMedia > :first-child { clip-path: inset(100% 0 0 0); }
+
+/* Reduced motion (and the no-JS fallback in layout.tsx) resolve everything. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .lineInner { opacity: 1 !important; transform: none !important; }
+  .clipMedia > :first-child { clip-path: none !important; }
+}

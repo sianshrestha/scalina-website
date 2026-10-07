@@ -1,0 +1,8 @@
+/* Styling port of unlumen UI's vertical-marquee.
+   The upstream component is Tailwind-only; these rules reproduce its utility
+   classes one-for-one so the scroll engine can stay untouched. */
+
+.root { height: 100%; width: 100%; overflow: hidden; }
+.columns { display: flex; height: 100%; }
+.column { min-width: 0; flex: 1; overflow: hidden; }
+.item { width: 100%; }

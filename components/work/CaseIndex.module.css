@@ -1,0 +1,164 @@
+.section { padding: 0 var(--gutter) clamp(6rem, 14vh, 11rem); }
+.shell { max-width: var(--shell); margin: 0 auto; }
+
+/* ---- filter ------------------------------------------------------------ */
+.filters {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: clamp(28px, 5vh, 48px);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.filter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color var(--d-state) var(--ease-standard);
+}
+.filter:hover { color: var(--text); }
+.filter[aria-pressed='true'] { color: var(--bg); }
+.filterPill { position: absolute; inset: 0; border-radius: inherit; background: var(--text); }
+.filterLabel, .filterCount { position: relative; }
+.filterCount {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  opacity: 0.7;
+}
+
+/* ---- list -------------------------------------------------------------- */
+.listWrap { position: relative; }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+
+.item { position: relative; border-bottom: 1px solid var(--line); }
+/* On the link, not the <li>: motion's entrance leaves an inline opacity on the
+   <li>, which would beat this rule. */
+.item[data-dim] .row { opacity: 0.32; }
+
+/* The rule draws itself under the row you are on — a hairline in brand
+   colour, scaled from the left. Compositor-only. */
+.item::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--accent-fg);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-reveal) var(--ease-out-expo);
+}
+.item:hover::after,
+.item:focus-within::after { transform: scaleX(1); }
+
+.row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1.3fr) minmax(0, 1fr) 176px 40px;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(22px, 3.4vh, 36px) 0;
+  transition: opacity var(--d-move) var(--ease-standard);
+}
+.row:focus-visible { outline-offset: 6px; }
+
+.index {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  color: var(--muted);
+}
+.thumb { display: none; }
+
+.name { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.client {
+  font-size: clamp(1.7rem, 3.6vw, 3.1rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  transition: transform var(--d-open) var(--ease-out-expo), color var(--d-state);
+}
+.row:hover .client,
+.row:focus-visible .client { transform: translateX(10px); color: var(--accent-fg); }
+.sector { font-size: 0.92rem; color: var(--muted); }
+
+.services { font-size: 0.92rem; line-height: 1.5; color: var(--muted); }
+
+.teams { display: flex; justify-content: flex-end; gap: 6px; }
+.team {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px var(--line);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.team[data-team='systems'] { background: var(--text); color: var(--bg); box-shadow: none; }
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line);
+  transition: transform var(--d-open) var(--ease-out-expo), background var(--d-state), color var(--d-state);
+}
+.row:hover .arrow,
+.row:focus-visible .arrow { transform: rotate(45deg); background: var(--accent-fg); color: var(--bg); box-shadow: none; }
+
+/* ---- preview ----------------------------------------------------------- */
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.previewCard {
+  position: absolute;
+  left: 24px;
+  top: -130px;
+  width: clamp(240px, 22vw, 340px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 40px 80px -30px rgba(11, 13, 18, 0.5);
+}
+.previewImg { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.previewImg[data-fit='contain'] { object-fit: contain; padding: 24px; background: #fff; }
+.previewCard > div { aspect-ratio: auto; height: 100%; border-radius: 0; }
+
+@media (max-width: 1023px) {
+  .row { grid-template-columns: 36px minmax(0, 1fr) 176px 36px; }
+  .services { display: none; }
+}
+
+/* Touch: no hover, so the picture moves into the row. */
+@media (hover: none), (max-width: 767px) {
+  .preview { display: none; }
+  .row { grid-template-columns: 56px minmax(0, 1fr) 32px; }
+  .index, .teams { display: none; }
+  .thumb {
+    display: block;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .initials { display: grid; place-items: center; height: 100%; color: #F4F2ED; font-weight: 500; letter-spacing: -0.02em; }
+  .arrow { width: 32px; height: 32px; }
+  .row:hover .client { transform: none; }
+}

@@ -1,0 +1,58 @@
+/* Figures and clients — the evidence block under the services. */
+
+.section { padding: clamp(6rem, 13vh, 11rem) var(--gutter); }
+.shell { max-width: var(--shell); margin: 0 auto; }
+.block + .block { margin-top: clamp(5rem, 11vh, 9rem); }
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 16px clamp(24px, 4vw, 64px);
+  margin-bottom: clamp(32px, 6vh, 56px);
+}
+.heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.note { margin: 0; max-width: 42ch; justify-self: end; font-size: 1.02rem; line-height: 1.6; color: var(--muted); }
+
+/* ---- named clients ----------------------------------------------------- */
+.clients {
+  list-style: none;
+  margin: clamp(28px, 5vh, 48px) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.clients li { border-bottom: 1px solid var(--line); }
+.client {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: clamp(18px, 3vh, 28px) 0;
+  font-size: clamp(1.5rem, 3.2vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  transition: color var(--d-state), padding var(--d-open) var(--ease-out-expo);
+}
+.client:hover { color: var(--accent-fg); padding-left: 12px; }
+.clientArrow { font-size: 0.6em; opacity: 0.4; transition: transform var(--d-open) var(--ease-out-expo), opacity var(--d-state); }
+.client:hover .clientArrow { transform: translateX(6px); opacity: 1; }
+
+.clientNote {
+  margin: 28px 0 0;
+  max-width: 48ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+@media (max-width: 767px) {
+  .head { grid-template-columns: 1fr; }
+  .note { justify-self: start; }
+}

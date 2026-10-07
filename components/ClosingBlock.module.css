@@ -1,0 +1,21 @@
+/* The closing block — the "Have a project in mind?" CTA and the footer share
+   one continuous fluid field behind them, so the glow runs from the CTA all
+   the way down through the wordmark rather than starting at the footer seam. */
+
+.block {
+  position: relative;
+  isolation: isolate;
+}
+
+.ether {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}

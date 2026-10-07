@@ -1,0 +1,78 @@
+/* Pinned colour wipe, after the reference in colour-wipe.html.
+
+   The structure is the whole trick: a tall `.track` provides the scroll
+   distance, `.stage` sticks inside it so the content is stationary, and the two
+   layers share one grid cell so their type lines up to the pixel. The overlay's
+   clip-path edge then cuts each letter as it passes. */
+
+.track { position: relative; }
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  overflow: hidden;
+}
+
+/* Same cell for both layers — this is what makes the letters line up. */
+.layer { grid-area: 1 / 1; position: relative; }
+
+.overlay {
+  /* The from-state is set by GSAP per direction; this is the safe default for
+     the frame before the tween is created, and for a failed hydration. */
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(20px, 3vh, 36px);
+  padding: clamp(72px, 12vh, 140px) var(--gutter) clamp(24px, 5vh, 56px);
+  max-width: var(--shell);
+  margin-inline: auto;
+}
+
+.centred { align-items: center; text-align: center; }
+.centred .note { margin-inline: auto; }
+
+.eyebrow {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.words {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: clamp(2.08rem, 8vw, 6.8rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+.words span { display: block; }
+
+.note {
+  margin: 0;
+  /* Falls back to inheriting the layer's own colour when no per-layer override
+     is given. */
+  color: var(--wipe-note-color, inherit);
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  line-height: 1.5;
+}
+
+/* No pin and no clip under reduced motion: the incoming state is shown
+   outright, which is the whole point of the preference. */
+@media (prefers-reduced-motion: reduce) {
+  .track { height: auto !important; }
+  .stage { position: relative; height: auto; }
+  .overlay { display: none; }
+}

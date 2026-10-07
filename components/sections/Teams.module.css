@@ -1,0 +1,302 @@
+/* Counterweight — two full-bleed bands running against each other.
+
+   One custom property, `--seam`, is the whole layout: the first band's basis,
+   the second band's basis (100% minus it) and the badge's vertical position
+   all read it, so the boundary and everything pinned to it move as one thing.
+   Transitioning `flex-basis` rather than height keeps the pair exactly filling
+   the section at every frame, with no sub-pixel line appearing mid-move. */
+
+.section {
+  position: relative;
+  height: 100svh;
+  min-height: 640px;
+  overflow: hidden;
+}
+
+.stack {
+  --seam: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.stack[data-open='media'] { --seam: 72%; }
+.stack[data-open='systems'] { --seam: 28%; }
+
+.band {
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 var(--seam);
+  transition: flex-basis var(--d-stage) var(--ease-out-expo);
+  will-change: flex-basis;
+}
+.band[data-band='systems'] {
+  flex-basis: calc(100% - var(--seam));
+  /* The seam itself. Inside the band's box (global border-box), so it costs
+     the layout nothing and moves with the split for free. */
+  border-top: 1px solid var(--brand-accent);
+}
+
+/* Fixed colours, not ground tokens — see the note in Teams.tsx. Media is the
+   light ground and Systems the dark one, which is the site's own pair stated
+   once, at full bleed, with both halves on screen at the same time. */
+.bandLight {
+  background: #F5F2F3;
+  color: #0B0D12;
+  --band-accent: #1E45FB;
+  --band-mute: #55575E;
+}
+.bandDark {
+  background: #08080A;
+  color: #F4F2ED;
+  --band-accent: #CDF22B;
+  --band-mute: #9A9AA2;
+}
+
+/* ---- the marquee ------------------------------------------------------- */
+
+.marquee {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity var(--d-reveal) var(--ease-standard);
+}
+/* The open band hands the screen to its detail. The squeezed one keeps its
+   type at full strength — it is the only thing it has left to say. */
+.band[data-state='open'] .marquee { opacity: 0.2; }
+
+/* Defined HERE, not read from globals.css. CSS Modules localises
+   `animation-name`, so a module referencing a globally-declared keyframes name
+   compiles to a hashed name that matches nothing and the track simply never
+   moves — which is exactly what it did. */
+@keyframes bandMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  /* Duration and direction are written per band from the component. */
+  animation: bandMarquee 34s linear infinite;
+  will-change: transform;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 46px);
+  padding-right: clamp(20px, 3vw, 46px);
+}
+
+.word {
+  font-family: var(--font-oswald), 'Arial Narrow', Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 9vw, 8rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.diamond {
+  width: clamp(9px, 0.95vw, 15px);
+  height: clamp(9px, 0.95vw, 15px);
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  background: var(--band-accent);
+}
+
+/* The whole band is the control. Under `.inner` so the copy draws over it,
+   and `.inner` passes clicks through to it everywhere except its own link. */
+.trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  appearance: none;
+}
+.trigger:focus-visible { outline: 2px solid var(--band-accent); outline-offset: -6px; }
+
+/* ---- the copy over it -------------------------------------------------- */
+
+.inner {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(24px, 5vw, 80px);
+  padding: clamp(20px, 3.2vh, 40px) var(--gutter);
+  /* The trigger underneath is what a click on the band should hit. */
+  pointer-events: none;
+}
+.inner a { pointer-events: auto; }
+/* Media reads from the top of its band, Systems from the bottom of its own,
+   so the pair frames the seam instead of both crowding it. */
+.band[data-band='systems'] .inner { align-items: flex-end; }
+/* The first band's label would otherwise sit inside the fixed header. */
+.band[data-band='media'] .inner { padding-top: clamp(86px, 11vh, 118px); }
+
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.number { color: var(--band-accent); }
+.name {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 400;
+  letter-spacing: inherit;
+  color: var(--band-mute);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  max-width: 46ch;
+  text-align: right;
+  /* Opacity only, not visibility: the link inside has to stay focusable, and
+     focusing it is what opens the band. */
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--d-open) var(--ease-standard), transform var(--d-reveal) var(--ease-out-expo);
+}
+/* Not `.band:focus-within`: the toggle keeps focus after a click, so closing
+   a band left its detail showing over the marquee. Only keyboard focus on the
+   detail's own link reveals it. */
+.band[data-state='open'] .detail,
+.detail:has(:focus-visible) { opacity: 1; transform: none; }
+
+.statement {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.95rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.figures {
+  margin: 0;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: var(--band-mute);
+}
+
+/* Provenance, deliberately quiet — it is there to be checked, not read. */
+.source {
+  margin: -6px 0 0;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--band-mute);
+  opacity: 0.8;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 2px;
+  color: var(--band-accent);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.more span:first-child { border-bottom: 1px solid currentColor; padding-bottom: 4px; }
+.moreArrow { transition: transform var(--d-open) var(--ease-back); }
+.more:hover .moreArrow { transform: translateX(8px); }
+
+/* ---- the badge on the seam --------------------------------------------- */
+
+.badge {
+  position: absolute;
+  z-index: 3;
+  left: var(--gutter);
+  top: var(--seam);
+  transform: translateY(-50%);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  background: var(--brand-accent);
+  color: #0B0D12;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: top var(--d-stage) var(--ease-out-expo);
+}
+.badgeRule { width: 1px; height: 12px; background: rgba(11, 13, 18, 0.35); }
+
+/* ---- touch, narrow, reduced motion -------------------------------------- */
+
+/* No hover means no way to open a band, so nothing is hidden behind one. */
+@media (hover: none) {
+  .stack,
+  .stack[data-open='media'],
+  .stack[data-open='systems'] { --seam: 50%; }
+  .detail { opacity: 1; transform: none; }
+  .marquee,
+  .band[data-state='open'] .marquee { opacity: 1; }
+}
+
+@media (max-width: 899px) {
+  .section { height: auto; min-height: 0; }
+  .stack { height: auto; }
+  .band { flex: 1 1 auto; min-height: 56svh; }
+  .inner,
+  .band[data-band='systems'] .inner {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .detail { align-items: flex-start; text-align: left; }
+  .word { font-size: clamp(2.4rem, 13vw, 4.5rem); }
+  .badge { top: 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The global rule forces animation-duration to near zero, which would park
+     the track at -50% mid-word. Killing the name instead leaves it at rest. */
+  .track { animation-name: none; }
+  .band, .detail, .badge, .marquee, .moreArrow { transition: none; }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

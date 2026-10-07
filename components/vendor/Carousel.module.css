@@ -1,0 +1,99 @@
+/* Port of the inline <style> block upstream injected for `.Carousal_003`.
+   As a module it is scoped, so the !important it needed there is gone. */
+
+/* `overflow-x: clip`, and it has to be here rather than on `.swiperCards`.
+   ---------------------------------------------------------------------------
+   The cards effect stacks its slides with 3D transforms that reach well past
+   the 400px deck, so the deck itself must stay `overflow: visible` or the fan
+   is sliced off. But visible overflow propagates: the stack measured 2124px
+   of scrollWidth inside a 400px box, which pushed /work's document to 2643px
+   against a 1440px viewport and gave the page a horizontal scrollbar with
+   1203px of dead space.
+
+   Clipping one level up, at shell width, contains the propagation while
+   leaving the fan room to overhang — it has a 1440px box to spread inside and
+   needs about 300px. `clip` rather than `hidden` on purpose: `hidden` would
+   make this a scroll container, which breaks `position: sticky` on ancestors
+   and is how this class of fix usually causes the next bug. */
+.wrap {
+  position: relative;
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  overflow-x: clip;
+}
+
+.swiper {
+  width: 100%;
+  padding-bottom: 56px;
+}
+
+/* The cards effect sizes the deck off the Swiper element, not the slides —
+   upstream's skiper48 sets `h-[380px] w-[260px]` on the container. */
+.swiperCards {
+  width: clamp(260px, 30vw, 400px);
+  /* The deck is narrower than the wrap, and the cards effect does not centre
+     itself the way slidesPerView="auto" + centeredSlides does. */
+  margin-inline: auto;
+  overflow: visible;
+}
+.slideCard {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* `slidesPerView="auto"` means the slide width comes from here, not from the
+   Swiper config — that is how upstream sizes it too. */
+.slide {
+  width: clamp(240px, 26vw, 340px);
+  height: auto;
+  background-position: center;
+  background-size: cover;
+}
+
+/* Pagination bullets. Upstream forces #000, which is invisible on the dark
+   ground — these read the ground tokens like everything else. */
+.wrap :global(.swiper-pagination-bullet) {
+  background-color: var(--text);
+  opacity: 0.25;
+}
+.wrap :global(.swiper-pagination-bullet-active) {
+  background-color: var(--accent-fg);
+  opacity: 1;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.prev,
+.next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: border-color var(--d-state), color var(--d-state);
+}
+.prev:hover,
+.next:hover { border-color: var(--accent-fg); color: var(--accent-fg); }
+.prev:focus-visible,
+.next:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* Swiper marks the buttons disabled at the ends when loop is off. */
+.prev:global(.swiper-button-disabled),
+.next:global(.swiper-button-disabled) { opacity: 0.35; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+  .prev, .next { transition: none; }
+}
