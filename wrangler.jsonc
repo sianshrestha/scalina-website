@@ -25,5 +25,8 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  /* Keep plain-text variables set in the dashboard (ENQUIRY_TO, ...) across
+     deploys; without this every deploy deletes them. Secrets always persist. */
+  "keep_vars": true
 }
