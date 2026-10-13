@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { EMAIL, PHONE, SOCIAL_LINKS } from '@/lib/content';
 import styles from './SiteFooter.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 const STUDIO = [
   { label: 'Work', href: '/work' },
@@ -51,7 +52,7 @@ export default function SiteFooter() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         const wordmark = wordmarkRef.current;
         if (!wordmark) return;
         gsap.fromTo(

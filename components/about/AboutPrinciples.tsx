@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import styles from './AboutPrinciples.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* How we work — told as a scroll story.
 
@@ -70,7 +71,7 @@ export default function AboutPrinciples() {
       const root = section.current;
       if (!root) return;
       const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         root.dataset.story = 'on';
         ScrollTrigger.refresh();
 

@@ -41,7 +41,7 @@ export default function ServicesHero({
             headline rather than swapping text under a settled one. */}
         <div key={team.key} className={styles.copy}>
           <WordRise as="h1" className={styles.headline} lines={team.headline} delay={0.05} stagger={0.045} />
-          <motion.p
+          <motion.p data-calm-static=""
             className={styles.lede}
             initial={reduced ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}

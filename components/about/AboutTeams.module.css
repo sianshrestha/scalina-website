@@ -316,7 +316,8 @@
 
 /* ---- flattened: narrow, or motion turned down --------------------------- */
 
-@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+/* Must match FLAT in AboutTeams.tsx (CALM_MOTION in lib/motion.ts). */
+@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none) {
   .track { --track-vh: 100; height: auto; }
   .stage { position: static; height: auto; overflow: visible; }
   .probe, .wipeFrom, .streams { display: none; }

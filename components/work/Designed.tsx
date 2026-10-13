@@ -42,7 +42,7 @@ export function DmFlow() {
         viewport={{ once: true, amount: 0.4 }}
       >
         {STEPS.map((s, i) => (
-          <motion.li key={s.k} className={styles.step} variants={bubble}>
+          <motion.li data-calm-static="" key={s.k} className={styles.step} variants={bubble}>
             <span className={styles.stepIndex}>{String(i + 1).padStart(2, '0')}</span>
             <span className={styles.stepKey}>{s.k}</span>
             <span className={styles.stepVal}>{s.v}</span>
@@ -67,7 +67,7 @@ export function DmFlow() {
           viewport={{ once: true, amount: 0.5 }}
         >
           {CHAT.map((m, i) => (
-            <motion.li key={i} className={m.from === 'bot' ? styles.bot : styles.them} variants={bubble}>
+            <motion.li data-calm-static="" key={i} className={m.from === 'bot' ? styles.bot : styles.them} variants={bubble}>
               {m.text}
             </motion.li>
           ))}
@@ -106,7 +106,7 @@ export function VoiceCall() {
         viewport={{ once: true, amount: 0.5 }}
       >
         {LINES.map((l, i) => (
-          <motion.li key={i} variants={bubble} data-who={l.who}>
+          <motion.li data-calm-static="" key={i} variants={bubble} data-who={l.who}>
             <span>{l.who}</span>
             {l.text}
           </motion.li>
@@ -129,7 +129,7 @@ export function Cadence({ weeks = 13, total = 38 }: { weeks?: number; total?: nu
           <div key={w} className={styles.week}>
             <div className={styles.dots}>
               {Array.from({ length: n }, (_, d) => (
-                <motion.span
+                <motion.span data-calm-static=""
                   key={d}
                   className={styles.dot}
                   initial={reduced ? false : { scale: 0, opacity: 0 }}

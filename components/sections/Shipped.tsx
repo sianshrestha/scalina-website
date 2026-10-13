@@ -6,6 +6,7 @@ import Magnetic from '@/components/Magnetic';
 import { useRef, useState } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import styles from './Shipped.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* Software Scalina has actually shipped — real screens, real clients. Each
    panel is the running interface photographed against sample data (never the
@@ -67,7 +68,7 @@ export default function Shipped() {
          is full-width, so the drift would push it past the screen edge and make
          the whole page pan sideways on a phone: it only fades there. */
       mm.add(
-        { motion: '(prefers-reduced-motion: no-preference)', wide: '(min-width: 900px)' },
+        { motion: FULL_MOTION, wide: '(min-width: 900px)' },
         (context) => {
           const { motion, wide } = context.conditions as { motion: boolean; wide: boolean };
           if (motion && leadRef.current) {

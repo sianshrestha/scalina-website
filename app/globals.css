@@ -324,3 +324,17 @@ body:has([data-hero]) [data-site-chrome] {
 @media (max-width: 767px) {
   .split3070 { grid-template-columns: 1fr; }
 }
+
+/* Phones and tablets get the calm site (lib/motion.ts): every motion/react
+   entrance is pinned to its final state from the first paint, so nothing rises
+   or fades in and nothing can be caught half-way. `[data-word-rise]` is the
+   word-mask heading; `[data-calm-static]` marks the other entrances. The hero
+   intro is not on this list, by request. */
+@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none) {
+  [data-word-rise],
+  [data-calm-static] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

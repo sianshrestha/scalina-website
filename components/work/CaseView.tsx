@@ -16,6 +16,7 @@ import { CASES, getCase, type CaseChapter, type CaseMedia as Media, type CaseStu
 import { gsap, useGSAP } from '@/lib/gsap';
 import { useGroundRhythm } from '@/lib/useGroundRhythm';
 import styles from './CaseView.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -38,7 +39,7 @@ export default function CaseView({ slug }: { slug: string }) {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         /* The cover opens as it rises into view — the panel's inset closes
            while the media inside settles from a slight zoom. Scrubbed, so it
            tracks the scroll rather than playing at its own pace. */
@@ -129,7 +130,7 @@ export default function CaseView({ slug }: { slug: string }) {
                   {words.map((w, i) => (
                     <Fragment key={i}>
                       <span className={styles.wordMask}>
-                        <motion.span
+                        <motion.span data-calm-static=""
                           className={styles.word}
                           initial={reduced ? false : { y: '110%' }}
                           animate={{ y: '0%' }}
@@ -143,7 +144,7 @@ export default function CaseView({ slug }: { slug: string }) {
                   ))}
                 </h1>
 
-                <motion.p
+                <motion.p data-calm-static=""
                   className={styles.headline}
                   initial={reduced ? false : { opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -152,7 +153,7 @@ export default function CaseView({ slug }: { slug: string }) {
                   {c.headline}
                 </motion.p>
 
-                <motion.dl
+                <motion.dl data-calm-static=""
                   className={styles.meta}
                   initial={reduced ? false : { opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -373,7 +374,7 @@ function Tilt({ children }: { children: ReactNode }) {
   if (reduced) return <div className={styles.slot}>{children}</div>;
 
   return (
-    <motion.div
+    <motion.div data-calm-static=""
       className={styles.slot}
       style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
       initial={{ opacity: 0, y: 36 }}

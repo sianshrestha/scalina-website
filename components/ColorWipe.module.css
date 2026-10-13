@@ -71,7 +71,8 @@
 
 /* No pin and no clip under reduced motion: the incoming state is shown
    outright, which is the whole point of the preference. */
-@media (prefers-reduced-motion: reduce) {
+/* No pin, no wipe: the opening sits on its own colour (lib/motion.ts). */
+@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none) {
   .track { height: auto !important; }
   .stage { position: relative; height: auto; }
   .overlay { display: none; }

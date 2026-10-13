@@ -31,10 +31,12 @@ export default function HomeView() {
       <SiteHeader />
       <main id="top" style={{ position: 'relative', zIndex: 1 }}>
         <div ref={rhythm} className="rhythm">
-          {/* Order: the two teams, then the work that proves them, then what
-              we sell, then how it runs, then the rest of the work. */}
+          {/* Order: the two teams, then the latest Media work, then the
+              software shipped (latest work first by request, Oct 2026), then
+              what we sell and how it runs. */}
           <Hero />
           <Teams />
+          <SelectedWork />
           <Shipped />
 
           {/* UP WIPE — the brand tagline (DESIGN.md §7), which appeared nowhere
@@ -65,7 +67,6 @@ export default function HomeView() {
 
           <WhatWeDo />
           <ScalinaSystem />
-          <SelectedWork />
           <Founder />
           <Manifesto />
           <ClosingBlock>

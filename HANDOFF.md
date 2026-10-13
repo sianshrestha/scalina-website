@@ -27,6 +27,41 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (5): calm motion on phones and tablets
+
+- **Phones and tablets get a calm site; desktop is unchanged** (owner's
+  choice). `lib/motion.ts` is the ONE definition: `FULL_MOTION` =
+  reduced-motion no-preference AND min-width 1024 AND hover:hover;
+  `CALM_MOTION` = reduced OR max-width 1023 OR hover:none. Every scroll-driven
+  GSAP `mm.add` uses `FULL_MOTION` (ColorWipe, Reveal, Counter, SiteFooter,
+  ScalinaSystem, AboutTeams DESKTOP/FLAT, AboutPrinciples, CaseView, Shipped);
+  every matching stylesheet block uses
+  `@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none)`
+  (Reveal, ColorWipe, SiteFooter, AboutTeams flat layout, ParallaxColumns).
+  motion/react entrances carry `data-calm-static` (or `data-word-rise`) and are
+  pinned visible by one rule at the end of `globals.css`, so phones never see a
+  hidden first paint. The ground rhythm steps instead of cross-fading on calm
+  devices (`prefersCalm()` in `useGroundRhythm`). **Kept everywhere by request:
+  the hero intro and the LiquidEther fluid.** Marquees and tap/hover feedback
+  also kept (cheap). Keep JS and CSS on the same definition or a component's
+  pin and its static layout disagree at some width.
+- **Teams on touch/narrow** is now a flow layout (label, marquee, copy; `.inner`
+  is `display: contents`; badge in flow between bands). The marquee used to run
+  through the always-visible copy on phones.
+- **Homepage order:** Hero, Teams, SelectedWork, Shipped, tagline wipe, ...
+  (latest work before shipped software, by request). One more ground change
+  than before (dark, light, dark, cobalt).
+- The layout's `<noscript>` Reveal selectors were `Reveal_reveal`, which never
+  matched a production build (`Reveal-module__<hash>__reveal`); fixed.
+- Verified with Playwright CLI (`playwright-cli`, iPhone 15 WebKit) against the
+  production Worker (`npm run preview`): no horizontal overflow, nothing left
+  hidden or mid-transform, no pins, wipes static, no Teams overlap; 820px
+  tablet and 1440px touch also calm; 1440px mouse still full motion.
+- Cloudflare: Always Use HTTPS on; the older (15:30) `resend._domainkey`
+  record deleted, the 15:36 one kept.
+
+---
+
 # READ THIS FIRST — 13 Oct 2026 (4): live on Cloudflare
 
 - **https://scalina.io is live** on the `scalina-website` Worker (Workers

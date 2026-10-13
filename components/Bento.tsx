@@ -21,7 +21,7 @@ export default function Bento({ tiles, label }: { tiles: ProofTile[]; label: str
   return (
     <ul className={styles.grid} aria-label={label}>
       {tiles.map((t, i) => (
-        <motion.li
+        <motion.li data-calm-static=""
           key={t.label}
           className={styles.cell}
           data-span={t.span}

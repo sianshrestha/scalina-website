@@ -257,29 +257,69 @@
 
 /* ---- touch, narrow, reduced motion -------------------------------------- */
 
-/* No hover means no way to open a band, so nothing is hidden behind one. */
-@media (hover: none) {
+/* Phones and tablets (lib/motion.ts): no band to open, and no copy laid over
+   the marquee.
+   ---------------------------------------------------------------------------
+   On desktop the copy sits OVER the marquee and only shows once a band is
+   opened. Touch has no way to open one, so the copy was always on, and on a
+   phone the giant words ran straight through it. Here each band is a plain
+   column instead: label, marquee, copy, in that order, nothing overlapping.
+   `.inner` goes `display: contents` so its two children can sit either side
+   of the marquee without changing the markup. The badge leaves the absolute
+   `--seam` position (half the stack is not the seam once the bands size to
+   their content) and sits in flow between the bands, straddling the line. */
+@media (max-width: 1023px), (hover: none) {
+  .section { height: auto; min-height: 0; overflow: visible; }
   .stack,
   .stack[data-open='media'],
-  .stack[data-open='systems'] { --seam: 50%; }
-  .detail { opacity: 1; transform: none; }
-  .marquee,
-  .band[data-state='open'] .marquee { opacity: 1; }
-}
+  .stack[data-open='systems'] { --seam: 50%; height: auto; }
 
-@media (max-width: 899px) {
-  .section { height: auto; min-height: 0; }
-  .stack { height: auto; }
-  .band { flex: 1 1 auto; min-height: 56svh; }
-  .inner,
-  .band[data-band='systems'] .inner {
+  .band,
+  .band[data-band='systems'] {
+    flex: none;
+    display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
+    gap: clamp(20px, 4vh, 32px);
+    padding: clamp(40px, 8vh, 64px) 0;
+    transition: none;
   }
-  .detail { align-items: flex-start; text-align: left; }
+  .band[data-band='media'] { order: 1; padding-top: clamp(96px, 14vh, 120px); }
+  .badge { order: 2; }
+  .band[data-band='systems'] { order: 3; }
+
+  .trigger { display: none; }
+  .inner,
+  .band[data-band='systems'] .inner { display: contents; }
+
+  .label,
+  .detail { position: relative; z-index: 2; padding-inline: var(--gutter); }
+  .label { order: 1; }
+  .marquee,
+  .band[data-state='open'] .marquee {
+    position: relative;
+    inset: auto;
+    order: 2;
+    opacity: 1;
+  }
+  .detail,
+  .band[data-state='open'] .detail {
+    order: 3;
+    align-items: flex-start;
+    max-width: none;
+    text-align: left;
+    opacity: 1;
+    transform: none;
+  }
+
   .word { font-size: clamp(2.4rem, 13vw, 4.5rem); }
-  .badge { top: 50%; }
+
+  .badge {
+    position: relative;
+    top: auto;
+    align-self: flex-start;
+    transform: none;
+    margin: -18px 0 -18px var(--gutter);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -4,6 +4,7 @@ import { useRef, type CSSProperties, type ReactNode } from 'react';
 import type { GroundName } from '@/lib/grounds';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import styles from './ColorWipe.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* A pinned, scroll-scrubbed colour wipe.
 
@@ -140,7 +141,7 @@ export default function ColorWipe({
 
       const mm = gsap.matchMedia();
 
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         /* Scrubbed against the track's own travel. `scrub: true` with
            `ease: 'none'` is the 1:1 mapping — the edge is wherever the scroll
            is, and it runs backwards when the scroll does. */

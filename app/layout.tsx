@@ -95,9 +95,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             chrome-less state — both are resolved by GSAP. If JS never runs,
             this makes sure the page is still fully readable. Keyed on data
             attributes rather than class names so it cannot drift when the CSS
-            module hashes change. */}
+            module hashes change. The Reveal selectors match CSS Modules' real
+            output, `Reveal-module__<hash>__reveal`; they used to look for
+            `Reveal_reveal`, which never matched a production build. */}
         <noscript>
-          <style>{`[class*="Reveal_reveal"],[class*="Reveal_lineInner"]{opacity:1!important;transform:none!important}[class*="Reveal_clipMedia"]>:first-child{clip-path:none!important}[data-hero-curtain]{display:none!important}[data-hero-text]{opacity:1!important;visibility:visible!important;transform:none!important}[data-hero-fill]{clip-path:none!important}[data-hero-outline]{opacity:0!important}[data-site-chrome]{opacity:1!important;visibility:visible!important}[data-word-rise]{transform:none!important}`}</style>
+          <style>{`[class*="Reveal-module__"][class*="__reveal"],[class*="Reveal-module__"][class*="__lineInner"]{opacity:1!important;transform:none!important}[class*="Reveal-module__"][class*="__clipMedia"]>:first-child{clip-path:none!important}[data-hero-curtain]{display:none!important}[data-hero-text]{opacity:1!important;visibility:visible!important;transform:none!important}[data-hero-fill]{clip-path:none!important}[data-hero-outline]{opacity:0!important}[data-site-chrome]{opacity:1!important;visibility:visible!important}[data-word-rise]{transform:none!important}`}</style>
         </noscript>
       </head>
       <body>

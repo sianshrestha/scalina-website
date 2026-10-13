@@ -122,7 +122,7 @@ export default function CaseIndex() {
               {cases.map((c, i) => {
                 const src = coverSrc(c);
                 return (
-                  <motion.li
+                  <motion.li data-calm-static=""
                     key={c.slug}
                     layout={!reduced}
                     className={styles.item}

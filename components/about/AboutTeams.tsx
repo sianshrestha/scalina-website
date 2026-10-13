@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import styles from './AboutTeams.module.css';
+import { CALM_MOTION, FULL_MOTION } from '@/lib/motion';
 
 /* Two specialist teams, one roof — the wipe and the section it becomes.
 
@@ -74,8 +75,8 @@ const TEAMS = [
 
 const HEADING = ['Two specialist', 'teams, one roof'];
 
-const DESKTOP = '(min-width: 900px) and (prefers-reduced-motion: no-preference)';
-const FLAT = '(max-width: 899px), (prefers-reduced-motion: reduce)';
+const DESKTOP = FULL_MOTION;
+const FLAT = CALM_MOTION;
 
 /* Where in the pin each half of the sequence sits, as a fraction of the
    scrubbed travel. Named so the ground steps below can be reasoned about

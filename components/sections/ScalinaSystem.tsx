@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import Reveal from '@/components/Reveal';
 import styles from './ScalinaSystem.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* Attract · Amplify · Convert · Operate.
 
@@ -74,9 +75,9 @@ export default function ScalinaSystem() {
 
       /* Pinned card stack. Each stage pins at the same offset and the next one
          scrolls over it, scaling the covered card back so the stack reads as
-         depth rather than as a pile. Below 900px, and under reduced motion,
-         the cards are just a normal stacked column. */
-      mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+         depth rather than as a pile. On phones and tablets, and under reduced
+         motion, the cards are just a normal stacked column (lib/motion.ts). */
+      mm.add(FULL_MOTION, () => {
         const cards = gsap.utils.toArray<HTMLElement>(`.${styles.card}`);
         const stack = stackRef.current;
         if (!cards.length || !stack) return;

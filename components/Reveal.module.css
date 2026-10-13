@@ -5,9 +5,10 @@
 .lineInner { display: block; opacity: 0; will-change: transform, opacity; }
 .clipMedia > :first-child { clip-path: inset(100% 0 0 0); }
 
-/* Reduced motion (and the no-JS fallback in layout.tsx) resolve everything. */
-@media (prefers-reduced-motion: reduce) {
+/* Reduced motion, phones and tablets (lib/motion.ts), and the no-JS fallback
+   in layout.tsx resolve everything: no entrance, already in place. */
+@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none) {
   .reveal,
-  .lineInner { opacity: 1 !important; transform: none !important; }
+  .lineInner { opacity: 1 !important; transform: none !important; will-change: auto; }
   .clipMedia > :first-child { clip-path: none !important; }
 }

@@ -3,6 +3,7 @@
 import { useRef, type CSSProperties, type ElementType, type ReactNode } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import styles from './Reveal.module.css';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* Scroll-triggered reveals — the real implementation of what `data-reveal`
    stood for in the design prototype.
@@ -64,7 +65,7 @@ export default function Reveal({
       if (!el) return;
 
       const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         /* Deliberately NOT `once: true`.
            `once` kills the ScrollTrigger the moment it fires. On a page that
            loads already scrolled — a #hash link, or a plain reload with scroll

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
+import { FULL_MOTION } from '@/lib/motion';
 
 /* A number that counts up the first time it is scrolled to.
 
@@ -27,7 +28,7 @@ export default function Counter({
       const el = ref.current;
       if (!el) return;
       const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
+      mm.add(FULL_MOTION, () => {
         const counter = { n: 0 };
         let started = false;
         gsap.to(counter, {

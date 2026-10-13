@@ -8,6 +8,7 @@ import {
   type GroundName,
   type GroundTokens,
 } from './grounds';
+import { prefersCalm } from '@/lib/motion';
 
 /* The page's dark/light rhythm.
 
@@ -178,7 +179,10 @@ export function useGroundRhythm(
 
       const entry = (sections[0].dataset.ground as GroundName) ?? 'dark';
       const groundOf = (el: HTMLElement) => (el.dataset.ground as GroundName) ?? entry;
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      /* Phones and tablets step between grounds instead of cross-fading: the
+         fade rewrites every colour token on <html> each frame for a second,
+         which is a whole-page style recalculation per frame (lib/motion.ts). */
+      const reduced = prefersCalm();
 
       /* Where the page currently sits: `mix` is the value handed to
          resolveGround, so it is the actual colour on screen, not a clock. */
