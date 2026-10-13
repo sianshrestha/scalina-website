@@ -27,6 +27,25 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (4): live on Cloudflare
+
+- **https://scalina.io is live** on the `scalina-website` Worker (Workers
+  Builds from `main`; custom domains `scalina.io` + `www.scalina.io`;
+  workers.dev off). Claude Code has the Cloudflare plugin + MCP (account
+  `scalinamedia@gmail.com`, zone id `1157d144d9b8cd77c0c42a7187127c69`).
+- Set up via the API on 13 Oct: Single Redirect `www.scalina.io` → `https://scalina.io`
+  (301, path + query kept); Turnstile widget "Scalina enquiry" (managed,
+  scalina.io + www; site key in `.env.production`, secret stored on the Worker
+  as `TURNSTILE_SECRET_KEY`); Web Analytics site for scalina.io in manual mode
+  (beacon token in `.env.production`; automatic injection was not used because
+  it is not confirmed to work on Worker-served pages).
+- **Still the owner's:** `RESEND_API_KEY` Worker secret (form returns 502 until
+  set), and two conflicting `resend._domainkey` TXT records in DNS: keep only
+  the one Resend's dashboard shows. `send`/`rsend` CNAMEs to `forge.rmta.net`
+  are Resend Forge and correct.
+
+---
+
 # READ THIS FIRST — 13 Oct 2026 (3): new domain scalina.io
 
 - **The site's domain is `scalina.io`** (registered at Cloudflare, so DNS is
