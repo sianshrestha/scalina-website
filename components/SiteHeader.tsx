@@ -7,13 +7,16 @@ import NavOverlay, { type NavItem } from '@/components/NavOverlay';
 import TextRoll from '@/components/vendor/TextRoll';
 import styles from './SiteHeader.module.css';
 
-/* "Start a project" is a nav link like the rest — it used to be a filled
-   yellow pill, which made it the loudest thing on every screen of the site. */
+/* The last item is the call to action: "Contact us", in brand green (owner,
+   Oct 2026; it was a plain "Start a project" link). It is a filled lime pill
+   rather than lime text so it stays legible when the header sits over a light
+   section, where lime type would all but disappear. */
+const CONTACT_HREF = '/start';
 const NAV: NavItem[] = [
   { label: 'Work', href: '/work' },
   { label: 'Services', href: '/services' },
   { label: 'About', href: '/about' },
-  { label: 'Start a project', href: '/start' },
+  { label: 'Contact us', href: CONTACT_HREF },
 ];
 
 /* The collapsed button names the page you are on, so the header still tells
@@ -29,7 +32,7 @@ function pageName(pathname: string, nav: NavItem[]): string {
 
 /* On a phone the button shares the bar with the centred wordmark, and a long
    page name in tracked caps runs into it. Those pages get a short form there. */
-const SHORT_NAMES: Record<string, string> = { 'Start a project': 'Start' };
+const SHORT_NAMES: Record<string, string> = { 'Contact us': 'Contact' };
 
 /* Below this the full nav is always shown, whichever way you are moving. */
 const REVEAL_ZONE = 0.8; // of one viewport
@@ -126,7 +129,11 @@ export default function SiteHeader() {
           {...(condensed || menuOpen ? { inert: true } : {})}
         >
           {NAV.map((item) => (
-            <a key={item.href} href={item.href} className={styles.navLink}>
+            <a
+              key={item.href}
+              href={item.href}
+              className={`${styles.navLink} ${item.href === CONTACT_HREF ? styles.navCta : ''}`}
+            >
               {/* Skiper UI's TextRoll (skiper58). Its own demo is a nav list,
                   which is exactly this. The incoming copy is --accent-fg, so a
                   nav item rolls up into brand colour — lime over the dark hero,

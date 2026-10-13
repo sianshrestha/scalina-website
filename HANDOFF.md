@@ -27,6 +27,32 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (6): owner's mobile review
+
+- **Phones/tablets: no ground transitions at all.** Under the calm query every
+  `[data-ground]` element paints its own tokens, background and text colour
+  (`calmGroundCss()` in `lib/grounds.ts`, emitted as a `<style>` by the
+  layout; `:where()` so components that paint their own surface still win).
+  Sections inside `ClosingBlock` (`data-closing`) stay transparent so the fluid
+  shows; the block paints the dark ground. The rhythm still writes <html>, but
+  on calm devices only for the header, switching at `HEADER_LINE` (46px)
+  instead of 55% of the viewport.
+- Teams `.figures` / `.source` hidden on calm devices.
+- **Latest work**: videos only (every card plays; posters live on the Maya
+  case study); round-robin across columns. Parallax is back on phones and
+  tablets, the one exception to calm motion (ParallaxColumns only stops for
+  reduced motion).
+- Founder: no grade filter or wash on the photo; new two-paragraph quote.
+- Header nav: "Start a project" is now **"Contact us"**, a lime pill with ink
+  (`.navCta`); pill page-name short form "Contact".
+- Hero: "Creative. Growth. Technology. Built to Scale." + "Get in touch" (to
+  /start) under the wordmark (`[data-hero-sub]`, fades in at reveal+0.6; shown
+  by `settle()` and the noscript rule). Client marquee: no links, no
+  pause/scale on hover, no list bullets (LogoLoop.css local patch).
+- LinkedIn added to `SOCIAL_LINKS`.
+
+---
+
 # READ THIS FIRST — 13 Oct 2026 (5): calm motion on phones and tablets
 
 - **Phones and tablets get a calm site; desktop is unchanged** (owner's

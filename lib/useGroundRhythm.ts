@@ -67,6 +67,9 @@ const TRIGGER_FRACTION = 0.55;
    point in the pin where the incoming colour has reached the top of the screen
    — see GROUND_STEP_AT in components/ColorWipe.tsx, which is where the fixed
    header is and so the only thing left that still reads these tokens. */
+/* The middle of the fixed header bar, in px from the top of the window. */
+const HEADER_LINE = 46;
+
 const groundLineFor = (section: HTMLElement, vh: number) => {
   const declared = Number(section.dataset.groundLine);
   return Number.isFinite(declared) && section.dataset.groundLine !== ''
@@ -284,7 +287,12 @@ export function useGroundRhythm(
            ones this already did. */
         let snap = false;
         for (const section of sections) {
-          if (section.getBoundingClientRect().top <= groundLineFor(section, vh)) {
+          /* On phones and tablets every section already paints its own ground
+             (calmGroundCss), so <html>'s tokens only matter to the fixed
+             header: switch them when a section reaches the header, so the
+             header always matches what is behind it. */
+          const line = reduced ? HEADER_LINE : groundLineFor(section, vh);
+          if (section.getBoundingClientRect().top <= line) {
             target = groundOf(section);
             const declared = section.dataset.groundLine;
             snap = declared !== undefined && declared !== '';

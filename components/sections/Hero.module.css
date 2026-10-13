@@ -154,10 +154,54 @@
   opacity: 0.62;
   transition: opacity var(--d-state), color var(--d-state);
 }
-.clientMark:hover { opacity: 1; color: var(--accent-fg); }
+
+/* Tagline and "Get in touch", under the wordmark. Hidden until the intro has
+   filled the word (Hero.tsx); the noscript rule in layout.tsx shows them. */
+.textWrap { flex-direction: column; }
+.sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(20px, 3vh, 32px);
+  margin-top: clamp(16px, 3vh, 32px);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+}
+.tagline {
+  margin: 0;
+  font-family: var(--font-inter-tight), Helvetica, Arial, sans-serif;
+  font-size: clamp(1.05rem, 1.7vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 56px;
+  padding: 0 32px;
+  border-radius: 9999px;
+  background: var(--brand-accent);
+  color: #0C0C0F;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: var(--t-label-lg);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: filter var(--d-state);
+}
+.cta:hover { filter: brightness(1.08); color: #0C0C0F; }
+.ctaArrow { transition: transform var(--d-move) var(--ease-back); }
+.cta:hover .ctaArrow { transform: translateX(4px); }
 
 @media (max-width: 767px) {
   .mark { font-size: clamp(3rem, 23vw, 7rem); }
+  .cta { height: 52px; padding: 0 28px; }
   .textWrap { padding-top: clamp(88px, 13vh, 120px); }
 }
 

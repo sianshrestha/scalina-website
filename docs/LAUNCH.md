@@ -331,7 +331,7 @@ what the Cookie Policy says.
 
 ## Phase 9: Before you announce it
 
-- [ ] LinkedIn URL into `SOCIAL_LINKS` in `lib/content.ts`.
+- [x] LinkedIn added to the footer (`SOCIAL_LINKS` in `lib/content.ts`).
 - [ ] Registered business name and ABN in `lib/legal.ts`.
 - [ ] Someone qualified reads `/privacy` and `/terms`.
 - [ ] Test on a real iPhone and Android phone, including an enquiry.

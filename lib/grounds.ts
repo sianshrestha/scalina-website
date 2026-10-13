@@ -241,3 +241,32 @@ export function resolveGround(from: GroundName, to: GroundName, p: number): Grou
 
   return out;
 }
+
+/* Phones and tablets: every section paints its own ground.
+   ---------------------------------------------------------------------------
+   On desktop the page has ONE ground, written to <html> and cross-faded as
+   sections cross the window. On phones and tablets the owner asked for no
+   transitions at all: a light section is light from its first pixel to its
+   last (Oct 2026). So under the calm-motion query (lib/motion.ts) each
+   `[data-ground]` element carries its own tokens, background and text colour.
+
+   `:where()` keeps it at zero specificity, so any component that already
+   paints its own surface (the Teams bands, the wipe layers, the hero field)
+   still wins. Sections inside the closing block stay transparent so the fluid
+   behind them shows; the block itself paints the dark ground instead.
+   Rendered once, server-side, by app/layout.tsx. */
+export const CALM_QUERY = '(prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none)';
+
+export function calmGroundCss(): string {
+  const rules = (Object.keys(GROUNDS) as GroundName[]).map((name) => {
+    const tokens = Object.entries(GROUNDS[name])
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';');
+    return `:where([data-ground="${name}"]){${tokens};background-color:var(--bg);color:var(--text)}`;
+  });
+  rules.push(
+    ':where([data-closing]){background-color:' + GROUNDS.dark['--bg'] + '}',
+    ':where([data-closing] [data-ground]){background-color:transparent}'
+  );
+  return `@media ${CALM_QUERY}{${rules.join('')}}`;
+}

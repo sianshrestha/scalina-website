@@ -62,6 +62,7 @@ export default function Hero() {
       const text = root.querySelector<HTMLElement>('[data-hero-text]');
       const fill = root.querySelector<HTMLElement>('[data-hero-fill]');
       const outline = root.querySelector<HTMLElement>('[data-hero-outline]');
+      const sub = root.querySelector<HTMLElement>('[data-hero-sub]');
       const curtains = gsap.utils.toArray<HTMLElement>('[data-hero-curtain]', root);
       /* The header lives outside this component but opens on the same clock,
          so it is addressed by attribute rather than passed down. Queried off
@@ -75,6 +76,7 @@ export default function Hero() {
         gsap.set(text, { y: 0, autoAlpha: 1 });
         gsap.set(fill, { clipPath: 'inset(0% 0% 0% 0%)' });
         gsap.set(outline, { opacity: 0 });
+        if (sub) gsap.set(sub, { autoAlpha: 1, y: 0 });
         gsap.set(curtains, { display: 'none' });
         gsap.set(chrome, { autoAlpha: 1 });
       };
@@ -117,6 +119,11 @@ export default function Hero() {
             );
             tl.to(outline, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 'reveal+=0.7');
             tl.to(chrome, { autoAlpha: 1, duration: 0.5 }, 'reveal+=0.5');
+            /* The tagline and CTA arrive with the header, once the word has
+               filled: they belong to the opened page, not to the intro. */
+            if (sub) {
+              tl.fromTo(sub, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 'reveal+=0.6');
+            }
           };
 
           /* Wait for the field's canvas to exist and to have had a frame to
@@ -173,16 +180,26 @@ export default function Hero() {
             Scalina
           </span>
         </h1>
+        <div className={styles.sub} data-hero-sub="">
+          <p className={styles.tagline}>Creative. Growth. Technology. Built to Scale.</p>
+          <a href="/start" className={styles.cta}>
+            <span>Get in touch</span>
+            <span aria-hidden="true" className={styles.ctaArrow}>
+              →
+            </span>
+          </a>
+        </div>
       </div>
 
       {/* Sits *under* the curtains, so the wipe uncovers it rather than it
-          fading in on its own. Nothing to animate — see Hero.module.css. */}
+          fading in on its own. Nothing to animate — see Hero.module.css.
+          Plain names only (owner, Oct 2026): no links, no pause or scale on
+          hover, no dots between them. */}
       <div className={styles.clients}>
         <span className={styles.clientsLabel}>Trusted by</span>
         <LogoLoop
           logos={CLIENTS.map((client) => ({
             node: <span className={styles.clientMark}>{client.name}</span>,
-            href: client.href,
             title: client.name,
             ariaLabel: client.name,
           }))}
@@ -190,8 +207,6 @@ export default function Hero() {
           direction="left"
           logoHeight={34}
           gap={72}
-          pauseOnHover
-          scaleOnHover
           fadeOut
           fadeOutColor="var(--bg)"
           ariaLabel="Scalina clients"

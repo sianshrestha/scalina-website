@@ -11,10 +11,9 @@ import styles from './SelectedWork.module.css';
 
 /* Latest work — a parallax wall of Scalina Media's output.
 
-   Real output now: the Maya Lounge poster series and frames from the weekly
-   UGC, all from the client's deliverables folder (lib/work.ts). The wall
-   takes every image the Media case studies carry, so a new case study with
-   pictures shows up here without touching this file. Tiles carry no text; the
+   Real output: the delivered short-form videos from the Media case studies
+   (lib/work.ts). A new case study with video shows up here without touching
+   this file. Tiles carry no text; the
    wall links to /work, where each piece is named. */
 
 type WallItem = { kind: 'image' | 'video'; src: string; poster?: string; w: number; h: number };
@@ -23,32 +22,27 @@ const ALL = CASES.filter((c) => c.teams.includes('media'))
   .flatMap((c) => [c.cover, ...c.chapters.flatMap((ch) => ch.media ?? [])])
   .filter((m, i, all) => m.kind !== 'designed' && all.findIndex((o) => o.kind !== 'designed' && 'src' in o && 'src' in m && o.src === m.src) === i);
 
-/* Stills: every poster, plus a frame from every video. Moving tiles: one
-   video per column, never more — a wall of twenty decoding videos janks on
-   any laptop, and one moving tile per column already reads as footage. */
-const STILLS: WallItem[] = ALL.flatMap((m): WallItem[] =>
-  m.kind === 'image' ? [{ kind: 'image', src: m.src, w: m.w, h: m.h }] :
-  m.kind === 'video' ? [{ kind: 'image', src: m.poster, w: m.w, h: m.h }] :
-  []
-);
-const MOVING: WallItem[] = ALL.flatMap((m): WallItem[] =>
+/* Every card plays: the wall is the delivered videos only (owner, Oct 2026).
+   It used to be one video per column among stills, which on a phone read as
+   footage that had stalled. The designed posters still live on their case
+   study. Cost stays bounded because LoopVideo loads nothing until a tile
+   scrolls into view (`preload="none"`) and pauses it once it leaves, so only
+   what is on screen is decoding. */
+const TILES: WallItem[] = ALL.flatMap((m): WallItem[] =>
   m.kind === 'video' ? [{ kind: 'video', src: m.src, poster: m.poster, w: m.w, h: m.h }] : []
 );
 
 /* Six per column: every column is well taller than the wall, which is what
-   lets it drift both ways without ever showing a gap. The one video sits at a
-   different row in each column so they never line up. */
+   lets it drift both ways without ever showing a gap. */
 const COLUMN_COUNT = 4;
 const PER_COLUMN = 6;
-const VIDEO_ROW = [1, 3, 2, 4];
 
 export default function SelectedWork() {
   const columns = Array.from({ length: COLUMN_COUNT }, (_, col) =>
     Array.from({ length: PER_COLUMN }, (_, row) => {
-      const item =
-        row === VIDEO_ROW[col] && MOVING.length
-          ? MOVING[(col * 3) % MOVING.length]
-          : STILLS[(col * PER_COLUMN + row) % STILLS.length];
+      /* Row-major across the columns, so the first two columns (all a phone
+         shows) get a mix of the newest pieces rather than one client each. */
+      const item = TILES[(row * COLUMN_COUNT + col) % TILES.length];
       return (
         /* Decorative here: every piece is named on its case study, and the
            wall links there. */

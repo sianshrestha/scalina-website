@@ -312,6 +312,10 @@
   }
 
   .word { font-size: clamp(2.4rem, 13vw, 4.5rem); }
+  /* The figures and their source line are desktop-only (owner, Oct 2026): on
+     a phone they turned each band into a wall of tracked caps. */
+  .figures,
+  .source { display: none; }
 
   .badge {
     position: relative;

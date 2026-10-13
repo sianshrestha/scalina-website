@@ -6,6 +6,7 @@ import Script from 'next/script';
 import SmoothScroll from '@/components/SmoothScroll';
 import { SHARE_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo';
 import { EMAIL, PHONE, SOCIAL_LINKS } from '@/lib/content';
+import { calmGroundCss } from '@/lib/grounds';
 
 /* Three faces, and only three — see DESIGN.md §2.
 
@@ -98,8 +99,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             module hashes change. The Reveal selectors match CSS Modules' real
             output, `Reveal-module__<hash>__reveal`; they used to look for
             `Reveal_reveal`, which never matched a production build. */}
+        {/* Phones and tablets: each section paints its own ground, so nothing
+            changes colour while scrolling (lib/grounds.ts, calmGroundCss). */}
+        <style>{calmGroundCss()}</style>
         <noscript>
-          <style>{`[class*="Reveal-module__"][class*="__reveal"],[class*="Reveal-module__"][class*="__lineInner"]{opacity:1!important;transform:none!important}[class*="Reveal-module__"][class*="__clipMedia"]>:first-child{clip-path:none!important}[data-hero-curtain]{display:none!important}[data-hero-text]{opacity:1!important;visibility:visible!important;transform:none!important}[data-hero-fill]{clip-path:none!important}[data-hero-outline]{opacity:0!important}[data-site-chrome]{opacity:1!important;visibility:visible!important}[data-word-rise]{transform:none!important}`}</style>
+          <style>{`[class*="Reveal-module__"][class*="__reveal"],[class*="Reveal-module__"][class*="__lineInner"]{opacity:1!important;transform:none!important}[class*="Reveal-module__"][class*="__clipMedia"]>:first-child{clip-path:none!important}[data-hero-curtain]{display:none!important}[data-hero-text]{opacity:1!important;visibility:visible!important;transform:none!important}[data-hero-fill]{clip-path:none!important}[data-hero-outline]{opacity:0!important}[data-hero-sub]{opacity:1!important;visibility:visible!important;transform:none!important}[data-site-chrome]{opacity:1!important;visibility:visible!important}[data-word-rise]{transform:none!important}`}</style>
         </noscript>
       </head>
       <body>

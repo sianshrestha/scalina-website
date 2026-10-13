@@ -67,6 +67,16 @@
 .navLink { display: inline-block; }
 .navLink :global(.sc-roll-incoming) { color: var(--accent-fg); }
 
+/* "Contact us": fixed brand green with ink, on every ground. */
+.navCta {
+  padding: 10px 18px;
+  border-radius: 9999px;
+  background: var(--brand-accent);
+  color: #0B0D12;
+
+}
+.navCta :global(.sc-roll-incoming) { color: #0B0D12; }
+
 /* The brand mark and pill read --text/--line/--scrim, so the whole header
    inverts with the ground under it. */
 .pill {

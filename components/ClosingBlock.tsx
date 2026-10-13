@@ -54,7 +54,7 @@ export default function ClosingBlock({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div ref={block} className={styles.block}>
+    <div ref={block} className={styles.block} data-closing="">
       <div aria-hidden="true" className={styles.ether}>
         {near ? <LiquidEther {...ETHER} /> : null}
       </div>

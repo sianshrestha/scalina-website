@@ -36,9 +36,9 @@
   .column[data-col='2'], .column[data-col='3'] { display: none; }
 }
 
-/* No parallax on phones and tablets (lib/motion.ts): the columns sit in place
-   at full height. LOCAL PATCH. */
-@media (prefers-reduced-motion: reduce), (max-width: 1023px), (hover: none) {
+/* Parallax stays on phones and tablets: the one exception to the calm motion
+   in lib/motion.ts, asked for by the owner (Oct 2026). Only reduced motion
+   turns it off. */
+@media (prefers-reduced-motion: reduce) {
   .gallery { height: auto; align-items: flex-start; }
-  .column { transform: none !important; }
 }

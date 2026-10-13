@@ -35,9 +35,9 @@ export const PHONE = {
   international: '+61 401 115 776',
 } as const;
 
-/* Public profiles. LinkedIn is left out until the owner supplies the URL:
-   a link to "#" looks unfinished, so it is better absent. */
+/* Public profiles: the footer and the Organization data (sameAs) read these. */
 export const SOCIAL_LINKS = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/scalina.io/' },
   { label: 'Instagram', href: 'https://www.instagram.com/scalina.media' },
   { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61579096958901' },
 ] as const;

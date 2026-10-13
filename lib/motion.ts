@@ -4,8 +4,8 @@
    pinned stages, no fade/rise entrances, no parallax, no counters, and the page
    ground steps between colours instead of cross-fading. Asked for by the owner
    (13 Oct 2026) after seeing those glitch on a phone. Desktop is unchanged.
-   The homepage hero intro and the WebGL fluid are deliberately NOT part of
-   this: they run everywhere, by request.
+   The homepage hero intro, the WebGL fluid and the Latest work parallax wall
+   are deliberately NOT part of this: they run everywhere, by request.
 
    "Phone or tablet" = narrower than 1024px, or a device whose primary pointer
    cannot hover (touch). The same definition has to be used by every GSAP
