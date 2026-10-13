@@ -44,7 +44,9 @@ with two internal teams — **Scalina Media** (content, light ground) and
   generating Google DKIM), merge `launch-prep` into `main`, Workers Builds,
   custom domain + www redirect, Resend via Cloudflare Domain Connect, Google
   Groups external-posting settings, Turnstile, analytics, Search Console, GBP.
-- Work is on branch `launch-prep` (not yet merged to `main` as of writing).
+- `launch-prep` was fast-forwarded into `main` and pushed (13 Oct 2026).
+  `docs/LAUNCH.md` Phase 0b covers creating the info@ Google Group and
+  Gmail "Send mail as" so members reply as info@.
 
 ---
 

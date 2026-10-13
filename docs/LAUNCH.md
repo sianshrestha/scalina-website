@@ -55,11 +55,82 @@ likely to land in spam.
 Check: send an email from a personal address to `info@scalina.io` and confirm
 the group members receive it.
 
-## Phase 1: Merge the code into `main`
+## Phase 0b: Create the info@scalina.io group, and reply as info@
 
-The finished work is on the `launch-prep` branch on GitHub. Open
-`https://github.com/sianshrestha/scalina-website/compare/main...launch-prep`,
-**Create pull request**, then **Merge**. Cloudflare will deploy from `main`.
+`info@` is a **Google Group**, not a user, so it costs no licence. Everyone in
+it receives what is sent to info@, and each member can send and reply **as**
+info@ from their own Gmail.
+
+### Allow groups to receive outside email (once, organisation-wide)
+
+Admin console (admin.google.com) > Menu > **Apps** > **Google Workspace** >
+**Groups for Business** > **Sharing settings** > tick **Group owners can allow
+incoming email from outside the organisation** > **Save**. Without this,
+customers (and the website) cannot email the group at all.
+
+### Create the group
+
+1. Admin console > Menu > **Directory** > **Groups** > **Create group**.
+2. Group details:
+   - **Group name:** `Scalina Info`
+   - **Group email:** `info` @ `scalina.io`
+   - **Description:** `Enquiries and general contact. Website enquiries arrive here.`
+   - **Group owner(s):** yourself (and any co-owner)
+   - **Next**. Leave the *Security* label unticked > **Next**.
+3. Access type: choose **Custom**, then set the table so:
+   - **Who can post:** tick **External** (this is the one that matters; it
+     lets customers, Resend and Gmail's verification email in)
+   - **Who can view conversations:** Group members
+   - **Who can view members:** Group managers
+   - **Who can contact group owners:** Entire organisation
+   - **Who can join the group:** Only invited users
+   - **Allow members outside your organisation:** Off
+   - **Next** > **Create group**.
+4. **Add members:** open the group > **Members** > **Add members** > each person
+   who should see enquiries, role **Member** (or Owner), delivery **Each email**.
+5. groups.google.com > **Scalina Info** > **Group settings**, check:
+   - *Who can post*: **Anyone on the web**
+   - *Message moderation*: **No moderation**
+   - *Spam messages*: **Post suspicious messages to the group**
+6. Test: from a personal address, email `info@scalina.io`. Every member should
+   get it within a minute.
+
+### Make replies go out as info@ (each member does this once, in their own Gmail)
+
+1. Gmail on a computer > **Settings** (gear) > **See all settings** >
+   **Accounts** tab.
+2. **Send mail as** > **Add another email address**:
+   - Name: `Scalina`
+   - Email address: `info@scalina.io`
+   - Leave **Treat as an alias** ticked > **Next step**.
+3. Google sends a confirmation email **to info@**, so it lands in every member's
+   inbox. Click the link in it (or paste its code). If it never arrives, the
+   group's *Who can post* is not set to External / Anyone on the web.
+4. Back in **Settings > Accounts > Send mail as**, set **When replying to a
+   message:** **Reply from the same address the message was sent to**.
+   Optionally click **make default** next to info@ to send *everything new* as
+   info@ too.
+5. Done. Now:
+   - A website enquiry arrives "To: info@scalina.io". Press **Reply**: it is
+     addressed to the visitor (the site sets Reply-To) and the **From** is
+     `info@scalina.io` automatically.
+   - Customer emails sent to info@ work the same way.
+   - Writing a new email: pick `info@scalina.io` in the **From** line.
+   - In the Gmail phone app, check the **From** line before sending; tap it to
+     switch if needed. The app uses the same addresses once step 2 is done on a
+     computer.
+
+**Tip: keep the team in the loop.** Add `info@scalina.io` in **Bcc** when you
+reply to a customer. Every member then gets a copy, so two people never answer
+the same enquiry. A Gmail filter on subject `Enquiry SC-` (Apply label
+`Enquiries`) keeps website enquiries together.
+
+Emails sent as info@ go out through Google with your domain's DKIM signature,
+so finish the DKIM step in Phase 0 first or they may land in customers' spam.
+
+## Phase 1: Code is on `main`
+
+The launch work is merged into `main` (done). Cloudflare deploys from `main`.
 
 ## Phase 2: Create the Worker from GitHub
 
