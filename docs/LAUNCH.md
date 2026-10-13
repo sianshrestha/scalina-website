@@ -43,7 +43,7 @@ Workspace setup adds some of these, not always all. Cloudflare > `scalina.io` >
 | `MX` | `scalina.io` (`@`) | `smtp.google.com`, priority 1 | required; Workspace setup adds it |
 | `TXT` | `scalina.io` (`@`) | `v=spf1 include:_spf.google.com ~all` | SPF; must be the ONLY `v=spf1` record on `@` |
 | `TXT` | `google._domainkey` | `v=DKIM1; k=rsa; p=...` | DKIM, see below |
-| `TXT` | `_dmarc` | `v=DMARC1; p=none; rua=mailto:info@scalina.io` | DMARC; add if missing |
+| `TXT` | `_dmarc` | added by Cloudflare DMARC Management (below) | DMARC; required by Gmail for good delivery |
 
 **DKIM is usually missing**, because Google makes you generate it yourself:
 Google Admin console (admin.google.com) > Apps > Google Workspace > Gmail >
@@ -52,8 +52,41 @@ Google Admin console (admin.google.com) > Apps > Google Workspace > Gmail >
 Admin, **Start authentication**. Without DKIM, mail you send from Gmail is more
 likely to land in spam.
 
+**DMARC:** Cloudflare > `scalina.io` > **Email** > **DMARC Management** >
+**Enable**. It adds the `_dmarc` record for you with `p=none` (monitor only)
+and collects the daily reports on a dashboard, instead of mailing them to
+info@. Do not point `rua=` at info@: every mail provider would send the group a
+report every day. After two to four weeks of clean reports, you can tighten the
+policy to `p=quarantine`.
+
+**After DKIM, confirm it is on:** Admin console > Apps > Google Workspace >
+Gmail > Authenticate email > `scalina.io` should say **Authenticating email**.
+If it says *Not authenticating*, click **Start authentication**.
+
 Check: send an email from a personal address to `info@scalina.io` and confirm
 the group members receive it.
+
+### If mail to info@ lands in Spam
+
+Common in the first days: `scalina.io` is brand new, the group is new, and
+Gmail is wary of both. In order:
+
+1. **Read Gmail's reason.** Open the message in Spam; the grey/yellow banner
+   says why ("similar to messages identified as spam", "sender could not be
+   verified", ...). *More (⋮) > Show original* shows SPF / DKIM / DMARC: all three
+   should say PASS for the *sender's* domain.
+2. **Mark it Not spam.** Each member, on each copy. Gmail learns per mailbox.
+3. **Test like a real email.** A one-word "test" from a fresh personal account is
+   exactly what spam looks like. Send a normal message with a subject and a few
+   sentences.
+4. **Make sure DMARC exists** and **DKIM is authenticating** (above).
+5. **Belt and braces, per member:** Gmail > search bar > *Show search options* >
+   **To:** `info@scalina.io` > **Create filter** > tick **Never send it to Spam**
+   (and optionally *Apply the label* `Info`) > **Create filter**. Trade-off: real
+   junk sent to info@ then reaches the inbox too. The website form is protected
+   by Turnstile, so that is mostly a concern for the public address itself.
+6. **Give it a couple of weeks.** Reputation builds as the domain sends and
+   receives normal mail; spam placement usually fades on its own.
 
 ## Phase 0b: Create the info@scalina.io group, and reply as info@
 
