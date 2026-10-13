@@ -326,7 +326,6 @@
     position: relative;
     inset: auto;
     clip-path: none;
-    min-height: 100svh;
     display: flex;
   }
   .mask {
@@ -340,12 +339,15 @@
     position: relative;
     top: auto;
     height: auto;
-    min-height: 100svh;
+    /* Sized to the copy, not the screen: a full-height cobalt block left
+       most of a phone screen empty blue (owner, Oct 2026). The top padding
+       clears the fixed header. */
+    min-height: 0;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     gap: clamp(20px, 4vh, 36px);
-    padding-block: clamp(4rem, 14vh, 9rem);
+    padding-block: clamp(104px, 15vh, 128px) clamp(48px, 8vh, 72px);
   }
   .heading {
     position: static;

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Magnetic from '@/components/Magnetic';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import styles from './Shipped.module.css';
 import { FULL_MOTION } from '@/lib/motion';
@@ -11,6 +11,12 @@ import { FULL_MOTION } from '@/lib/motion';
 /* Software Scalina has actually shipped — real screens, real clients. Each
    panel is the running interface photographed against sample data (never the
    client's own records) and opens that client's case study. */
+/* The swipe strip and the vertical label swap are the two halves of one
+   breakpoint; they must never both be live. Matches the 899px block in
+   Shipped.module.css. */
+const NARROW = '(max-width: 899px)';
+const WIDE = '(min-width: 900px)';
+
 const PROJECTS = [
   {
     name: 'Warehouse Management System',
@@ -93,8 +99,10 @@ export default function Shipped() {
 
       /* Swap the sticky label to whichever panel owns the viewport centre.
          Setting on both enter directions means the slot holds the last value
-         in the gaps between panels rather than going blank. */
-      panelRefs.current.forEach((panel, index) => {
+         in the gaps between panels rather than going blank. Desktop only:
+         below 900px the panels are a horizontal swipe strip and the label
+         follows the swipe instead (the effect below). */
+      mm.add(WIDE, () => panelRefs.current.forEach((panel, index) => {
         if (!panel) return;
         gsap.timeline({
           scrollTrigger: {
@@ -110,7 +118,7 @@ export default function Shipped() {
             onEnterBack: () => setActive(index),
           },
         });
-      });
+      }));
 
       // gsap.matchMedia() owns its own context; revert it or its
       // ScrollTriggers outlive this run.
@@ -118,6 +126,47 @@ export default function Shipped() {
     },
     { scope, dependencies: [] }
   );
+
+  /* Phones: the screens are a swipe strip, and the name and client above it
+     follow whichever screen is snapped into place (owner, Oct 2026). */
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const narrow = window.matchMedia(NARROW);
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const start = track.getBoundingClientRect().left;
+        let best = 0;
+        let bestDistance = Infinity;
+        panelRefs.current.forEach((panel, index) => {
+          if (!panel) return;
+          const distance = Math.abs(panel.getBoundingClientRect().left - start);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            best = index;
+          }
+        });
+        setActive(best);
+      });
+    };
+    const sync = () => {
+      track.removeEventListener('scroll', onScroll);
+      if (narrow.matches) {
+        track.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+    };
+    sync();
+    narrow.addEventListener('change', sync);
+    return () => {
+      cancelAnimationFrame(frame);
+      narrow.removeEventListener('change', sync);
+      track.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   const current = PROJECTS[active];
 
@@ -150,10 +199,13 @@ export default function Shipped() {
                   {current.client}
                 </span>
               </span>
+              <span className={styles.count} aria-hidden="true">
+                {String(active + 1).padStart(2, '0')} / {String(PROJECTS.length).padStart(2, '0')}
+              </span>
             </div>
           </div>
 
-          <div className={styles.panels}>
+          <div ref={trackRef} className={styles.panels} aria-label="Shipped software screens">
             {PROJECTS.map((project, index) => (
               <a
                 key={project.name}

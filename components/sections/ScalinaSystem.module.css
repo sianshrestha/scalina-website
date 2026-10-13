@@ -44,6 +44,10 @@
   /* Sized in vw alongside the column, so the line count holds at four. */
   font-size: clamp(1.4rem, 2.9vw, 2.6rem);
 }
+/* Phones: a paragraph at reading size, not display size (owner, Oct 2026). */
+@media (max-width: 767px) {
+  .body { font-size: 1.2rem; line-height: 1.35; letter-spacing: -0.01em; }
+}
 
 
 /* ---- the stack --------------------------------------------------------- */

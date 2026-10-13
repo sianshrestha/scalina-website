@@ -99,7 +99,7 @@
    comfortable thumb target. The desktop menu is unchanged. */
 @media (max-width: 767px) {
   .item { padding: 6px 0; }
-  .itemLabel { font-size: 2.4rem; }
+  .itemLabel { font-size: 2rem; }
   .footLink { display: inline-block; padding: 12px 0; }
 }
 

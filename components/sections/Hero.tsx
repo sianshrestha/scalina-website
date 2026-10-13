@@ -172,6 +172,9 @@ export default function Hero() {
       <div className={`${styles.curtain} ${styles.curtainRight}`} data-hero-curtain="" aria-hidden="true" />
 
       <div className={styles.textWrap} data-hero-text="">
+        {/* The tagline hangs below the word without taking part in the
+            layout, so the word stays exactly where it was: dead centre. */}
+        <div className={styles.markWrap}>
         <h1 className={styles.mark}>
           <span className={styles.markFill} data-hero-fill="">
             Scalina
@@ -188,6 +191,7 @@ export default function Hero() {
               →
             </span>
           </a>
+        </div>
         </div>
       </div>
 

@@ -19,6 +19,10 @@ const NAV: NavItem[] = [
   { label: 'Contact us', href: CONTACT_HREF },
 ];
 
+/* The full-screen menu also leads with Home (owner, Oct 2026): on a phone it is
+   the only navigation there is. The desktop bar keeps the brand link for it. */
+const MENU: NavItem[] = [{ label: 'Home', href: '/' }, ...NAV];
+
 /* The collapsed button names the page you are on, so the header still tells
    you where you are once the nav has folded away. Anything not listed falls
    back to its first path segment. */
@@ -158,7 +162,7 @@ export default function SiteHeader() {
         </button>
       </header>
 
-      <NavOverlay open={menuOpen} items={NAV} onClose={closeMenu} />
+      <NavOverlay open={menuOpen} items={MENU} onClose={closeMenu} />
     </>
   );
 }

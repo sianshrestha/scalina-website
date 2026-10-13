@@ -51,7 +51,7 @@
 
 @media (max-width: 899px) {
   .shell { grid-template-columns: 1fr; align-items: start; }
-  .cta { height: 60px; padding: 0 32px; }
+  .cta { height: 50px; padding: 0 24px; gap: 10px; font-size: var(--t-eyebrow); }
 }
 @media (prefers-reduced-motion: reduce) {
   .cta, .arrow { transition: none; }

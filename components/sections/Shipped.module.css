@@ -120,8 +120,37 @@
 
 .footerCta { display: flex; justify-content: flex-end; margin-top: clamp(32px, 6vh, 64px); }
 
+/* Position of the screen in the strip; phones only. */
+.count { display: none; }
+
 @media (max-width: 899px) {
   .columns { grid-template-columns: 1fr; }
+  /* The screens become a horizontal swipe strip, snapping one at a time, with
+     the next one showing at the edge so it reads as swipeable. The name and
+     client above follow the snapped screen (Shipped.tsx). */
+  .panels {
+    flex-direction: row;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .panels::-webkit-scrollbar { display: none; }
+  .panel { flex: 0 0 86%; scroll-snap-align: start; }
+  .clientRow { flex-wrap: wrap; }
+  .count {
+    display: block;
+    margin-left: auto;
+    font-family: var(--font-plex-mono), monospace;
+    font-size: var(--t-eyebrow);
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
   .stickyBody { padding-top: 0; }
   .sticky { position: static; height: auto; }
   .stickyBody { padding: 0 0 clamp(20px, 4vh, 40px); }

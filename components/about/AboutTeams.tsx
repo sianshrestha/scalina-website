@@ -63,7 +63,7 @@ const TEAMS = [
       'Works in interface and grid. Builds the websites, tools and automation a business actually runs on. The infrastructure that carries the volume the front of the business creates.',
     services: [
       'Website development',
-      'Custom software (CRM, ERP, WMS, portals)',
+      'Custom software',
       'Automation & AI workflows',
       'Funnels & lead generation',
       'SEO & search infrastructure',

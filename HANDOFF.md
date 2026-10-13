@@ -27,6 +27,25 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (7): owner's second mobile review
+
+- Hero: the tagline/CTA (`.sub`) is absolutely placed under the word
+  (`.markWrap` + `top: 100%`, strip spans -50vw..-50vw, only the button takes
+  pointer events) so SCALINA is centred exactly as before. CTA 46px desktop,
+  40px phones; tagline 0.9rem on phones.
+- Shipped below 900px: the panels are a horizontal scroll-snap strip (86%
+  slides, next one peeking) and the name/client/`01 / 05` count follow the
+  snapped slide (scroll listener in Shipped.tsx). The vertical label-swap
+  ScrollTriggers only run at 900px+ (`WIDE`), so the two never fight.
+- Phones: Scalina System statement 1.2rem, founder quote 1.15rem, closing CTA
+  (StartProject and ServiceCta) 50px.
+- Menu overlay leads with Home (`MENU` in SiteHeader; the desktop bar does not
+  get it); phone item size 2rem.
+- About "Two specialist teams" on calm devices is sized to its copy (no
+  100svh blocks). "Custom software" lost its "(CRM, ERP, WMS, portals)".
+
+---
+
 # READ THIS FIRST — 13 Oct 2026 (6): owner's mobile review
 
 - **Phones/tablets: no ground transitions at all.** Under the calm query every
