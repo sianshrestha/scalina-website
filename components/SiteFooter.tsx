@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
-import { PHONE, SOCIAL_LINKS } from '@/lib/content';
+import { EMAIL, PHONE, SOCIAL_LINKS } from '@/lib/content';
 import styles from './SiteFooter.module.css';
 
 const STUDIO = [
@@ -25,7 +25,7 @@ const LEGAL = [
    "Start a project" rather than "Request a proposal": the site had three
    names for one destination. */
 const CONTACT = [
-  { label: 'info@scalinamedia.com', href: 'mailto:info@scalinamedia.com' },
+  { label: EMAIL, href: `mailto:${EMAIL}` },
   { label: PHONE.display, href: `tel:${PHONE.tel}` },
   { label: 'Start a project', href: '/start' },
 ];

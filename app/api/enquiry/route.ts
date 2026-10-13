@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { SOURCE_QUESTION, STEPS, type EnquiryPayload, type Intent } from '@/lib/enquiry';
 import { deliver, reached } from '@/lib/deliverEnquiry';
 import { verifyTurnstile } from '@/lib/turnstile';
+import { EMAIL as CONTACT_EMAIL } from '@/lib/content';
 
 /* Receives an enquiry from /start.
 
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'We could not confirm you are not a bot. Please refresh and try again, or email info@scalinamedia.com.',
+          `We could not confirm you are not a bot. Please refresh and try again, or email ${CONTACT_EMAIL}.`,
       },
       { status: 403 }
     );
@@ -142,7 +143,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'We could not record your enquiry just now. Please email info@scalinamedia.com and we will pick it up from there.',
+          `We could not record your enquiry just now. Please email ${CONTACT_EMAIL} and we will pick it up from there.`,
       },
       { status: 502 }
     );

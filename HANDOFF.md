@@ -27,6 +27,27 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (3): new domain scalina.io
+
+- **The site's domain is `scalina.io`** (registered at Cloudflare, so DNS is
+  already on Cloudflare: no nameserver move). **Email is `info@scalina.io`**, a
+  Google Workspace group. Every `scalinamedia.com` reference in code is gone.
+  Supersedes the Squarespace/scalinamedia.com notes below.
+- The address lives in ONE place: `EMAIL` in `lib/content.ts` (beside `PHONE`
+  and `SOCIAL_LINKS`). Footer, menu, /start, the enquiry API's error messages,
+  `lib/legal.ts`, `lib/deliverEnquiry.ts` (default `ENQUIRY_TO`) and the
+  Organization JSON-LD all import it. `EnquiryFlow.tsx` and the API route
+  import it as `CONTACT_EMAIL` because both already have an `EMAIL` regex.
+- Defaults now: `SITE_URL` `https://scalina.io` (`lib/seo.ts`,
+  `.env.production`), `ENQUIRY_FROM` `Scalina Website <website@scalina.io>`.
+- `docs/LAUNCH.md` rewritten for scalina.io: Workspace DNS check (incl.
+  generating Google DKIM), merge `launch-prep` into `main`, Workers Builds,
+  custom domain + www redirect, Resend via Cloudflare Domain Connect, Google
+  Groups external-posting settings, Turnstile, analytics, Search Console, GBP.
+- Work is on branch `launch-prep` (not yet merged to `main` as of writing).
+
+---
+
 # READ THIS FIRST — 13 Oct 2026 (2): Cloudflare, legal, spam, SEO
 
 - **Hosting is Cloudflare Workers via OpenNext** (`@opennextjs/cloudflare`

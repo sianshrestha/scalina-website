@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import TextRoll from '@/components/vendor/TextRoll';
 import { getLenis } from '@/lib/lenis';
+import { EMAIL } from '@/lib/content';
 import styles from './NavOverlay.module.css';
 
 /* The full-screen menu.
@@ -76,8 +77,8 @@ export default function NavOverlay({
       </nav>
 
       <div className={styles.foot}>
-        <a href="mailto:info@scalinamedia.com" className={styles.footLink}>
-          info@scalinamedia.com
+        <a href={`mailto:${EMAIL}`} className={styles.footLink}>
+          {EMAIL}
         </a>
         <span className={styles.footNote}>Australia. Media and Systems under one roof</span>
       </div>

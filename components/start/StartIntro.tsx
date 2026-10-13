@@ -1,5 +1,6 @@
 import Reveal from '@/components/Reveal';
 import WordRise from '@/components/WordRise';
+import { EMAIL } from '@/lib/content';
 import styles from './StartIntro.module.css';
 
 /* The top of /start. Deliberately short: the page's job is the flow below it,
@@ -23,8 +24,8 @@ export default function StartIntro() {
             <li>Nothing you send is shared</li>
             <li>
               Prefer email?{' '}
-              <a href="mailto:info@scalinamedia.com" className="inlineLink">
-                info@scalinamedia.com
+              <a href={`mailto:${EMAIL}`} className="inlineLink">
+                {EMAIL}
               </a>
             </li>
           </ul>

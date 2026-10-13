@@ -1,3 +1,5 @@
+import { EMAIL } from './content';
+
 /* The facts the legal pages are built on. Everything the privacy policy, terms
    and cookie policy say about who runs the site lives here, so a change of
    business name, ABN or contact is one edit, not three.
@@ -14,7 +16,7 @@ export const LEGAL = {
   abn: '',
   location: 'Sydney, New South Wales, Australia',
   jurisdiction: 'New South Wales',
-  email: 'info@scalinamedia.com',
+  email: EMAIL,
   /* Shown on all three pages. Update it whenever any of them changes. */
   updated: '13 October 2026',
 } as const;

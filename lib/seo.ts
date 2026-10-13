@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 /* Where the site lives. Canonical URLs, the sitemap, robots.txt and the
    absolute share-image URLs are all built from this. Set in .env.production. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://scalinamedia.com').replace(
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://scalina.io').replace(
   /\/$/,
   ''
 );

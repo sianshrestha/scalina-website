@@ -12,6 +12,7 @@ import {
   type Question,
 } from '@/lib/enquiry';
 import Turnstile, { TURNSTILE_SITE_KEY, type TurnstileHandle } from './Turnstile';
+import { EMAIL as CONTACT_EMAIL } from '@/lib/content';
 import styles from './EnquiryFlow.module.css';
 
 /* The enquiry flow.
@@ -400,8 +401,8 @@ export default function EnquiryFlow() {
       {status === 'error' ? (
         <p className={styles.sendError} role="alert">
           That didn&rsquo;t send. Try again, or email us directly at{' '}
-          <a href="mailto:info@scalinamedia.com" className="inlineLink">
-            info@scalinamedia.com
+          <a href={`mailto:${CONTACT_EMAIL}`} className="inlineLink">
+            {CONTACT_EMAIL}
           </a>
           .
         </p>

@@ -290,8 +290,8 @@ SCALINA_CRM_TOKEN=…                 # optional; sent as Authorization: Bearer
 
 # Email, via Resend's HTTP API (no SDK)
 RESEND_API_KEY=re_…                 # sending-access key
-ENQUIRY_TO=info@scalinamedia.com    # default; comma-separate for several
-ENQUIRY_FROM="Scalina Website <website@scalinamedia.com>"  # default; domain must be verified in Resend
+ENQUIRY_TO=info@scalina.io          # default; comma-separate for several
+ENQUIRY_FROM="Scalina Website <website@scalina.io>"  # default; domain must be verified in Resend
 ```
 
 Behaviour, verified end to end:

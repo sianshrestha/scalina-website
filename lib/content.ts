@@ -24,8 +24,11 @@ export const CTA = {
   scale: 'Get scaled',
 } as const;
 
-/* How to reach the studio. One source for the footer, /start and the
-   organisation data search engines read (app/layout.tsx). */
+/* How to reach the studio. One source for the footer, the menu, /start, the
+   legal pages, the enquiry API's error messages and the organisation data
+   search engines read (app/layout.tsx). info@ is a Google Workspace group. */
+export const EMAIL = 'info@scalina.io';
+
 export const PHONE = {
   display: '0401 115 776',
   tel: '+61401115776',

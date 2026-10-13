@@ -79,7 +79,7 @@ npm run test:contrast  # section-transition contrast never drops below 3:1
 npm run test:scale     # spacing on the 2px grid, motion and label tokens only
 ```
 
-Enquiries from `/start` are emailed to info@scalinamedia.com through Resend
+Enquiries from `/start` are emailed to info@scalina.io through Resend
 (and to the Scalina CRM once `SCALINA_CRM_ENDPOINT` is set), configured from
 environment variables (`.env.local` locally, Worker secrets in production; see
 `.env.example`). Until one destination is set, submissions return 502 on

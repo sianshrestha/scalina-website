@@ -8,7 +8,7 @@ import StartIntro from './StartIntro';
 import StartFaq from './StartFaq';
 import EnquiryFlow from './EnquiryFlow';
 import { useGroundRhythm } from '@/lib/useGroundRhythm';
-import { PHONE } from '@/lib/content';
+import { EMAIL, PHONE } from '@/lib/content';
 import styles from './StartView.module.css';
 
 export default function StartView() {
@@ -40,8 +40,8 @@ export default function StartView() {
                 </h2>
                 <ul className={styles.directList}>
                   <li>
-                    <a href="mailto:info@scalinamedia.com" className={styles.directLink}>
-                      info@scalinamedia.com
+                    <a href={`mailto:${EMAIL}`} className={styles.directLink}>
+                      {EMAIL}
                     </a>
                   </li>
                   <li>

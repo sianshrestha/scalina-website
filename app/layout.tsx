@@ -5,7 +5,7 @@ import './globals.css';
 import Script from 'next/script';
 import SmoothScroll from '@/components/SmoothScroll';
 import { SHARE_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo';
-import { PHONE, SOCIAL_LINKS } from '@/lib/content';
+import { EMAIL, PHONE, SOCIAL_LINKS } from '@/lib/content';
 
 /* Three faces, and only three — see DESIGN.md §2.
 
@@ -70,7 +70,7 @@ const ORGANIZATION_LD = {
   alternateName: ['Scalina Media', 'Scalina Systems'],
   url: SITE_URL,
   logo: `${SITE_URL}/apple-icon.png`,
-  email: 'info@scalinamedia.com',
+  email: EMAIL,
   telephone: PHONE.international,
   sameAs: SOCIAL_LINKS.map((link) => link.href),
   slogan: 'Go Digital, or Go Invisible.',

@@ -1,4 +1,5 @@
 import 'server-only';
+import { EMAIL } from './content';
 
 /* Delivery for a validated enquiry: the Scalina CRM, and an email to the team.
 
@@ -34,9 +35,9 @@ import 'server-only';
      SCALINA_CRM_TOKEN      optional; sent as `Authorization: Bearer …`
 
      RESEND_API_KEY         a Resend API key with sending access
-     ENQUIRY_TO             defaults to info@scalinamedia.com (a group inbox;
+     ENQUIRY_TO             defaults to info@scalina.io (a Google Workspace group;
                             comma-separate for more than one address)
-     ENQUIRY_FROM           defaults to "Scalina Website <website@scalinamedia.com>";
+     ENQUIRY_FROM           defaults to "Scalina Website <website@scalina.io>";
                             its domain must be verified in Resend
 
    Email goes through Resend's HTTP API rather than SMTP: it is one fetch, needs
@@ -110,7 +111,7 @@ async function toEmail(enquiry: Enquiry, reference: string): Promise<'sent' | 's
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return 'skipped';
 
-  const to = (process.env.ENQUIRY_TO ?? 'info@scalinamedia.com')
+  const to = (process.env.ENQUIRY_TO ?? EMAIL)
     .split(',')
     .map((address) => address.trim())
     .filter(Boolean);
@@ -125,7 +126,7 @@ async function toEmail(enquiry: Enquiry, reference: string): Promise<'sent' | 's
       'idempotency-key': `enquiry-${reference}`,
     },
     body: JSON.stringify({
-      from: process.env.ENQUIRY_FROM ?? 'Scalina Website <website@scalinamedia.com>',
+      from: process.env.ENQUIRY_FROM ?? 'Scalina Website <website@scalina.io>',
       to,
       /* The visitor's address, so hitting reply in the client answers them. */
       reply_to: contact.email,
