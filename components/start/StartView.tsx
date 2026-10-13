@@ -8,6 +8,7 @@ import StartIntro from './StartIntro';
 import StartFaq from './StartFaq';
 import EnquiryFlow from './EnquiryFlow';
 import { useGroundRhythm } from '@/lib/useGroundRhythm';
+import { PHONE } from '@/lib/content';
 import styles from './StartView.module.css';
 
 export default function StartView() {
@@ -43,10 +44,9 @@ export default function StartView() {
                       info@scalinamedia.com
                     </a>
                   </li>
-                  {/* PLACEHOLDER number, same as the footer. */}
                   <li>
-                    <a href="tel:+61491570156" className={styles.directLink}>
-                      0491 570 156
+                    <a href={`tel:${PHONE.tel}`} className={styles.directLink}>
+                      {PHONE.display}
                     </a>
                   </li>
                 </ul>

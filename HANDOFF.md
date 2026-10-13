@@ -27,6 +27,90 @@ with two internal teams — **Scalina Media** (content, light ground) and
 
 ---
 
+# READ THIS FIRST — 13 Oct 2026 (2): Cloudflare, legal, spam, SEO
+
+- **Hosting is Cloudflare Workers via OpenNext** (`@opennextjs/cloudflare`
+  1.20.10, needed **Next 16.3.8**, bumped from 16.3.1). `wrangler.jsonc` (Worker
+  `scalina-website`, `nodejs_compat`, IMAGES binding for next/image),
+  `open-next.config.ts` (static-assets incremental cache: read-only, fine because
+  nothing revalidates; switch to R2 if anything ever uses `revalidate`),
+  `public/_headers`, scripts `preview` / `deploy` / `upload` / `cf-typegen`.
+  Worker is ~1.47 MiB gzipped. `npm run preview` was smoke-tested: every route,
+  next/image, the API. ESLint now ignores `.open-next/` (it OOM'd linting it).
+  The owner's step-by-step is `docs/LAUNCH.md`.
+- **Env files:** `.env.development` (committed: Cloudflare's always-pass
+  Turnstile TEST keys), `.env.production` (committed: PUBLIC build-time values
+  only: site URL, Turnstile site key, Web Analytics token), `.env.example`
+  (server secrets, set with `wrangler secret put`). OpenNext also loads the
+  matching .env file at runtime via `NEXTJS_ENV` (`.dev.vars` sets development
+  for `npm run preview`).
+- **Legal pages** `/privacy`, `/terms` (Terms of Use, website only), `/cookies`
+  (Cookie Policy: the site sets no cookies and uses no storage, so no banner).
+  `components/legal/LegalView` + server-rendered `LegalArticle` (passing the
+  section bodies as props to the client view triggered React key warnings).
+  Business name/ABN are blank in `lib/legal.ts` until the owner supplies them;
+  the pages omit them when blank. Footer labels now "Terms of Use" / "Cookie
+  Policy". Copy describes only what the build does; if the form, providers or
+  analytics change, the pages must too.
+- **Spam:** honeypot `website` field (bots get a fake 200, nothing sent) and
+  Turnstile (`components/start/Turnstile.tsx`, interaction-only; verified in
+  `lib/turnstile.ts`, fails closed, required only when `TURNSTILE_SECRET_KEY`
+  is set, action must be `enquiry`). Token reset after a failed send.
+- **SEO:** `lib/seo.ts` `pageMetadata()` on every page (canonical, OG, Twitter).
+  Homepage moved to `components/HomeView.tsx` behind a server shell.
+  Share image is `public/og-image.png` named explicitly on every page: the
+  file-convention `opengraph-image` was dropped from inner pages because their
+  own `openGraph` replaced it. Generator: `scripts/og-image/`. `app/sitemap.ts`,
+  `app/robots.ts`, Organization JSON-LD in the layout (add `sameAs` when the
+  social URLs exist). Cloudflare Web Analytics beacon loads only when
+  `NEXT_PUBLIC_CF_BEACON_TOKEN` is set.
+- **Owner confirmed** ANFA Australia and Gurkha Jewellery may be named, and OZI
+  HP's $350+ saving is per month (copy already said so).
+- `npm audit`: remaining highs are `glob` CLI in OpenNext's build tooling (not
+  reachable at runtime); its "fix" is a downgrade. Non-breaking fixes applied.
+- **Contact details are real now** and live in `lib/content.ts` (`PHONE`:
+  0401 115 776 / +61 401 115 776; `SOCIAL_LINKS`: Instagram scalina.media,
+  Facebook page). Footer, /start and the Organization JSON-LD (`telephone`,
+  `sameAs`) all read them. LinkedIn is omitted until the owner sends the URL.
+- **Domain is registered at Squarespace** (bought via Google Domains). It stays
+  there; only the nameservers move to Cloudflare (see `docs/LAUNCH.md` step 1).
+  Owner asked about Netlify Free: advised against (300 credits/month, ~15 GB
+  bandwidth at 20 credits/GB, site paused when credits run out).
+- **Still owed by the owner:** LinkedIn URL, legal entity + ABN, a legal
+  review, and everything account-side in `docs/LAUNCH.md`. Site URL is assumed
+  to be `https://scalinamedia.com`.
+
+---
+
+# READ THIS FIRST — 13 Oct 2026: launch prep
+
+- **Favicon done.** `app/favicon.ico` (16/32/48), `app/icon.svg`, `app/apple-icon.png`
+  (180, full-bleed for iOS). It is the header mark (same path data as
+  `SiteHeader.tsx`) in bone `#F5F2F3` on a cobalt `#1E45FB` tile.
+- **Enquiry email is Resend now, not SMTP.** `lib/deliverEnquiry.ts` POSTs to
+  `https://api.resend.com/emails` with `fetch` (no SDK; idempotency key = the
+  enquiry reference). Env: `RESEND_API_KEY`, `ENQUIRY_TO` (default
+  info@scalinamedia.com, a Google group), `ENQUIRY_FROM` (default
+  `Scalina Website <website@scalinamedia.com>`; domain must be verified in
+  Resend). `nodemailer` was removed. `.env.example` is committed. The CRM channel
+  is unchanged and still waits on `SCALINA_CRM_ENDPOINT`: the owner will wire it
+  later.
+- **Mobile fixes:** the homepage scrolled sideways 27px on phones because the
+  Shipped lead statement's 14% drift-in was applied to a full-width paragraph;
+  the drift is now desktop-only (`gsap.matchMedia` conditions). Header pill
+  shows "Start" instead of "Start a project" below 480px and is tighter there,
+  so no page name reaches the centred wordmark down to 320px. Menu overlay
+  links are 2.4rem / 52px tall on phones (desktop unchanged). Every route was
+  swept at 375px for horizontal overflow: none.
+- `.claude/launch.json` has `autoPort: true` (port 3000 is often taken by the
+  owner's Remotion studio for another project).
+- **Hosting recommendation given to the owner:** Cloudflare Workers via
+  `@opennextjs/cloudflare` (Workers Paid, US$5/mo; no bandwidth charges, which
+  matters with ~150MB of video), or Vercel Pro (US$20/mo) as the zero-config
+  alternative. Hobby is non-commercial. Not set up yet.
+
+---
+
 # READ THIS FIRST — 7 Oct 2026: now a git repo
 
 - **The project is a git repository** (`main`), pushed to the private GitHub repo
@@ -40,7 +124,6 @@ with two internal teams — **Scalina Media** (content, light ground) and
 - **Fixed a homepage crash:** vendored `FlowingMenu` measured a closed panel as
   0px wide and called `Array(Infinity)` ("Invalid array length"), killing the
   page under reduced motion. Guarded in place (LOCAL PATCH comment).
-- Missing `favicon.ico` still 404s; add one to `app/`.
 
 ---
 
@@ -204,8 +287,9 @@ lists the six case-study clients.
 ## Open questions for the owner
 - Gorkha vs **Gurkha**: the app itself says "GURKHA JEWELLERY"; the site says Gorkha.
 - Runaway Entertainment (was "Entertainments") — spelling taken from the latest brief.
-- ANFA Australia and Gorkha Jewellery were not on the brand file's
-  named-with-permission list — confirm before launch.
+- ~~ANFA Australia and Gorkha Jewellery were not on the brand file's
+  named-with-permission list — confirm before launch.~~ **Confirmed by the
+  owner 13 Oct 2026**, as was OZI HP's "$350+ a month" being per month.
 - Finished Maya/Gurung videos need downloading (see above) to replace raw loops.
 
 ---

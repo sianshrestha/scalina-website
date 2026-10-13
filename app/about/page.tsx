@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import AboutView from '@/components/about/AboutView';
 
 /* Server shell so the page can carry its own metadata — the view underneath is
    a client component because the ground rhythm measures scroll. */
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About | Scalina',
   description:
     'Two specialist teams under one roof: Scalina Media makes the content that gets a business found, Scalina Systems builds the software it runs on. Australian, Sydney-born, working nationally.',
-};
+  path: '/about',
+});
 
 export default function AboutPage() {
   return <AboutView />;

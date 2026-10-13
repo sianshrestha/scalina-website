@@ -63,26 +63,32 @@ export default function Shipped() {
     () => {
       const mm = gsap.matchMedia();
 
-      // The lead statement drifts in from the left as it enters.
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        if (leadRef.current) {
-          gsap.fromTo(
-            leadRef.current,
-            { xPercent: 14, opacity: 0.15 },
-            {
-              xPercent: 0,
-              opacity: 1,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: leadRef.current,
-                start: 'top 95%',
-                end: 'top 25%',
-                scrub: true,
-              },
-            }
-          );
-        }
-      });
+      /* The lead statement drifts in from the left as it enters. Below 900px it
+         is full-width, so the drift would push it past the screen edge and make
+         the whole page pan sideways on a phone: it only fades there. */
+      mm.add(
+        { motion: '(prefers-reduced-motion: no-preference)', wide: '(min-width: 900px)' },
+        (context) => {
+          const { motion, wide } = context.conditions as { motion: boolean; wide: boolean };
+          if (motion && leadRef.current) {
+            gsap.fromTo(
+              leadRef.current,
+              { xPercent: wide ? 14 : 0, opacity: 0.15 },
+              {
+                xPercent: 0,
+                opacity: 1,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: leadRef.current,
+                  start: 'top 95%',
+                  end: 'top 25%',
+                  scrub: true,
+                },
+              }
+            );
+          }
+        },
+      );
 
       /* Swap the sticky label to whichever panel owns the viewport centre.
          Setting on both enter directions means the slot holds the last value

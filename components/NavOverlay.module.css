@@ -95,6 +95,14 @@
 .footLink:hover { color: var(--brand-accent); }
 .footNote { color: rgba(244, 242, 237, 0.45); }
 
+/* Phones only: at the desktop scale the links are 33px tall, under a
+   comfortable thumb target. The desktop menu is unchanged. */
+@media (max-width: 767px) {
+  .item { padding: 6px 0; }
+  .itemLabel { font-size: 2.4rem; }
+  .footLink { display: inline-block; padding: 12px 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .overlay, .item, .foot { transition: opacity 120ms linear; }
   .overlay { clip-path: none; }

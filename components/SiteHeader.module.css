@@ -111,6 +111,17 @@
   .pill { opacity: 1; transform: scale(1); pointer-events: auto; }
 }
 
+/* Long page names give way to their short form where they would reach the
+   centred wordmark. */
+.pillShort { display: none; }
+@media (max-width: 479px) {
+  .pillLong { display: none; }
+  .pillShort { display: inline; }
+  /* "Services" is the longest name left; this keeps it clear of the
+     wordmark down to a 320px screen. */
+  .pill { padding: 0 14px; font-size: 0.72rem; letter-spacing: 0.08em; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav, .pill { transition: none; }
 }

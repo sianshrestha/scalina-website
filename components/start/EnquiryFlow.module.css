@@ -330,3 +330,18 @@
    growing a text link's box to 44px would open gaps in copy it sits inside.
    Nothing below changes what anything looks like. */
 .back { min-height: 44px; }
+
+/* Honeypot: in the DOM and focusable by script, never seen or reached by a
+   person. Off-screen rather than display:none, which some bots skip. */
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Turnstile renders nothing visible unless Cloudflare needs an interaction;
+   then it gets a row of its own above the actions. */
+.turnstile { margin-top: 24px; }
+.turnstile:empty { margin-top: 0; }

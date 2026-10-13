@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from 'next';
 import { Inter_Tight, IBM_Plex_Mono, Oswald } from 'next/font/google';
 import 'lenis/dist/lenis.css';
 import './globals.css';
+import Script from 'next/script';
 import SmoothScroll from '@/components/SmoothScroll';
+import { SHARE_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo';
+import { PHONE, SOCIAL_LINKS } from '@/lib/content';
 
 /* Three faces, and only three — see DESIGN.md §2.
 
@@ -40,10 +43,44 @@ const plexMono = IBM_Plex_Mono({
   display: 'swap',
 });
 
+/* Defaults every page inherits. Each page sets its own title, description and
+   canonical through `pageMetadata` (lib/seo.ts), which also names the share
+   image; these are the fallback for anything that does not. */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'Scalina | Go Digital, or Go Invisible.',
   description:
     'Scalina builds the content, the campaigns, and the system your business runs on. One team for the work that brings people in, and one for the work that keeps them.',
+  applicationName: SITE_NAME,
+  openGraph: { siteName: SITE_NAME, locale: 'en_AU', type: 'website', images: [SHARE_IMAGE] },
+  twitter: { card: 'summary_large_image', images: [SHARE_IMAGE] },
+};
+
+/* Cloudflare Web Analytics: cookieless, so no consent banner (see /cookies).
+   Only loads when a beacon token is set in .env.production. */
+const CF_BEACON_TOKEN = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
+
+/* Who runs the site, for search engines. Only facts the site already states.
+   `sameAs` ties the site to its social profiles (and, through them, to the
+   Google Business Profile); LinkedIn joins when lib/content.ts has it. */
+const ORGANIZATION_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  alternateName: ['Scalina Media', 'Scalina Systems'],
+  url: SITE_URL,
+  logo: `${SITE_URL}/apple-icon.png`,
+  email: 'info@scalinamedia.com',
+  telephone: PHONE.international,
+  sameAs: SOCIAL_LINKS.map((link) => link.href),
+  slogan: 'Go Digital, or Go Invisible.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Sydney',
+    addressRegion: 'NSW',
+    addressCountry: 'AU',
+  },
+  areaServed: 'AU',
 };
 
 export const viewport: Viewport = {
@@ -66,6 +103,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <SmoothScroll />
         {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_LD) }}
+        />
+        {CF_BEACON_TOKEN ? (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            strategy="afterInteractive"
+            data-cf-beacon={JSON.stringify({ token: CF_BEACON_TOKEN })}
+          />
+        ) : null}
       </body>
     </html>
   );

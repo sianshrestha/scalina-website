@@ -1,7 +1,8 @@
 /* Shared content that more than one section needs.
 
    Clients are the ones with a case study in lib/work.ts. Every one is named
-   with permission (confirmed by the studio, Sep 2026).
+   with permission (confirmed by the studio, Sep 2026; ANFA Australia and
+   Gurkha Jewellery reconfirmed by the owner, 13 Oct 2026).
    `node`-style wordmarks stand in until real logo files are supplied — swap
    `name` for an `src` in the LogoLoop items when they arrive. */
 export const CLIENTS = [
@@ -22,3 +23,18 @@ export const CTA = {
   contact: 'Contact us',
   scale: 'Get scaled',
 } as const;
+
+/* How to reach the studio. One source for the footer, /start and the
+   organisation data search engines read (app/layout.tsx). */
+export const PHONE = {
+  display: '0401 115 776',
+  tel: '+61401115776',
+  international: '+61 401 115 776',
+} as const;
+
+/* Public profiles. LinkedIn is left out until the owner supplies the URL:
+   a link to "#" looks unfinished, so it is better absent. */
+export const SOCIAL_LINKS = [
+  { label: 'Instagram', href: 'https://www.instagram.com/scalina.media' },
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61579096958901' },
+] as const;

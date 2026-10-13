@@ -9,3 +9,8 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+/* Lets `next dev` read Cloudflare bindings (wrangler.jsonc) the same way the
+   deployed Worker does. */
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+initOpenNextCloudflareForDev();

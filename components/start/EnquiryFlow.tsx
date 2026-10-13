@@ -11,6 +11,7 @@ import {
   type Intent,
   type Question,
 } from '@/lib/enquiry';
+import Turnstile, { TURNSTILE_SITE_KEY, type TurnstileHandle } from './Turnstile';
 import styles from './EnquiryFlow.module.css';
 
 /* The enquiry flow.
@@ -40,6 +41,16 @@ export default function EnquiryFlow() {
   const [showErrors, setShowErrors] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [reference, setReference] = useState<string | null>(null);
+  /* Spam protection: a Turnstile token, and a honeypot field people never see
+     (bots fill every input they find). See app/api/enquiry/route.ts. */
+  const [botToken, setBotToken] = useState<string | null>(null);
+  const [botWait, setBotWait] = useState(false);
+  const [trap, setTrap] = useState('');
+  const turnstile = useRef<TurnstileHandle | null>(null);
+  const onBotToken = useCallback((token: string | null) => {
+    setBotToken(token);
+    if (token) setBotWait(false);
+  }, []);
 
   const headingRef = useRef<HTMLParagraphElement | null>(null);
   const firstRender = useRef(true);
@@ -133,6 +144,13 @@ export default function EnquiryFlow() {
       setShowErrors(true);
       return;
     }
+    /* The check usually finishes long before anyone reaches Send. If it has
+       not, say so rather than sending something the server will refuse. */
+    if (TURNSTILE_SITE_KEY && !botToken) {
+      setBotWait(true);
+      return;
+    }
+    setBotWait(false);
     setStatus('sending');
     try {
       const response = await fetch('/api/enquiry', {
@@ -143,6 +161,8 @@ export default function EnquiryFlow() {
           answers,
           contact,
           attribution: attribution.current,
+          turnstileToken: botToken ?? undefined,
+          website: trap,
         }),
       });
       if (!response.ok) throw new Error(String(response.status));
@@ -151,6 +171,8 @@ export default function EnquiryFlow() {
       setStatus('sent');
     } catch {
       setStatus('error');
+      /* Tokens are single-use: a retry needs a fresh one. */
+      turnstile.current?.reset();
     }
   };
 
@@ -322,7 +344,25 @@ export default function EnquiryFlow() {
                 />
               </label>
 
+              {/* Honeypot. Off-screen rather than display:none, which some bots
+                  skip; out of the tab order and hidden from assistive tech so
+                  no person ever fills it. */}
+              <div className={styles.trap} aria-hidden="true">
+                <label htmlFor="website">Leave this empty</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={trap}
+                  onChange={(e) => setTrap(e.target.value)}
+                />
+              </div>
+
               <Summary answers={answers} />
+
+              <Turnstile ref={turnstile} onToken={onBotToken} />
             </div>
           )}
       </div>
@@ -349,6 +389,13 @@ export default function EnquiryFlow() {
           </button>
         )}
       </div>
+
+      {botWait ? (
+        <p className={styles.sendError} role="status">
+          Just checking you&rsquo;re not a bot. This takes a second; press Send again once it
+          clears.
+        </p>
+      ) : null}
 
       {status === 'error' ? (
         <p className={styles.sendError} role="alert">

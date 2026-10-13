@@ -60,7 +60,15 @@ built, and finished videos that play with sound on tap.
 npm install
 npm run dev            # http://localhost:3000
 npm run build && npm start
+npm run preview        # build for Cloudflare and run it in the Workers runtime
+npm run deploy         # build and deploy to Cloudflare Workers
 ```
+
+Hosted on **Cloudflare Workers** through the OpenNext adapter
+(`@opennextjs/cloudflare`; config in `wrangler.jsonc` and `open-next.config.ts`).
+Every page is prerendered, so the page cache is read-only Workers Static Assets
+and needs no R2 bucket. `docs/LAUNCH.md` walks through the domain, secrets,
+Turnstile, Resend, analytics, Search Console and Google Business Profile.
 
 Checks to run before shipping:
 
@@ -71,9 +79,13 @@ npm run test:contrast  # section-transition contrast never drops below 3:1
 npm run test:scale     # spacing on the 2px grid, motion and label tokens only
 ```
 
-Enquiries from `/start` are delivered to the Scalina CRM and by SMTP, configured
-in `.env.local`. Until those variables are set, submissions return 502 on
-purpose (see `lib/deliverEnquiry.ts`).
+Enquiries from `/start` are emailed to info@scalinamedia.com through Resend
+(and to the Scalina CRM once `SCALINA_CRM_ENDPOINT` is set), configured from
+environment variables (`.env.local` locally, Worker secrets in production; see
+`.env.example`). Until one destination is set, submissions return 502 on
+purpose (see `lib/deliverEnquiry.ts`). The form is protected by a honeypot field
+and Cloudflare Turnstile (`lib/turnstile.ts`); `next dev` uses Cloudflare's
+always-pass test keys from `.env.development`.
 
 ## Pages
 
@@ -85,6 +97,8 @@ purpose (see `lib/deliverEnquiry.ts`).
 | `/services?view=media\|systems` | Each team's services, a service explorer and a figures bento |
 | `/about` | The two teams, how we work (a pinned scroll story), proof bento, founder |
 | `/start` | A short, mostly multiple-choice enquiry flow |
+| `/privacy`, `/terms`, `/cookies` | Legal pages; business details in `lib/legal.ts` |
+| `/sitemap.xml`, `/robots.txt` | Generated from `app/sitemap.ts` and `app/robots.ts` |
 
 ## Where things live
 
@@ -97,6 +111,8 @@ Content is kept out of components. To change what the site says, edit `lib/`.
 | `lib/services.ts` | Services copy for both teams |
 | `lib/content.ts` | Client list and CTA wording |
 | `lib/enquiry.ts` | The enquiry questions and their closed vocabulary |
+| `lib/legal.ts` | Business name, ABN, contact and "last updated" date for the legal pages |
+| `lib/seo.ts` | Site URL, page metadata helper, share image (`public/og-image.png`) |
 | `public/work/<client>/` | Case-study media: screenshots, posters, video loops and full edits |
 
 Every figure on the site is counted, not estimated, and `lib/work.ts` /

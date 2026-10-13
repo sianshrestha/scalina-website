@@ -27,6 +27,10 @@ function pageName(pathname: string, nav: NavItem[]): string {
   return segment.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }
 
+/* On a phone the button shares the bar with the centred wordmark, and a long
+   page name in tracked caps runs into it. Those pages get a short form there. */
+const SHORT_NAMES: Record<string, string> = { 'Start a project': 'Start' };
+
 /* Below this the full nav is always shown, whichever way you are moving. */
 const REVEAL_ZONE = 0.8; // of one viewport
 /* Ignore sub-pixel and rubber-band jitter. */
@@ -139,11 +143,26 @@ export default function SiteHeader() {
           onClick={() => setMenuOpen((open) => !open)}
           className={`${styles.pill} ${condensed || menuOpen ? styles.pillVisible : ''}`}
         >
-          <span>{menuOpen ? 'Close' : pageName(pathname, NAV)}</span>
+          {menuOpen ? (
+            <span>Close</span>
+          ) : (
+            <PillLabel name={pageName(pathname, NAV)} />
+          )}
         </button>
       </header>
 
       <NavOverlay open={menuOpen} items={NAV} onClose={closeMenu} />
+    </>
+  );
+}
+
+function PillLabel({ name }: { name: string }) {
+  const short = SHORT_NAMES[name];
+  if (!short) return <span>{name}</span>;
+  return (
+    <>
+      <span className={styles.pillLong}>{name}</span>
+      <span className={styles.pillShort}>{short}</span>
     </>
   );
 }

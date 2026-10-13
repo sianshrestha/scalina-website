@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { SOURCE_QUESTION, STEPS, type EnquiryPayload, type Intent } from '@/lib/enquiry';
 import { deliver, reached } from '@/lib/deliverEnquiry';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 /* Receives an enquiry from /start.
 
@@ -18,7 +19,18 @@ import { deliver, reached } from '@/lib/deliverEnquiry';
    Validation is a whitelist built from lib/enquiry.ts rather than a schema
    written out twice. Anything not in the declared vocabulary is dropped, which
    both keeps the analytics clean and means a forged payload cannot smuggle
-   arbitrary strings into whatever ends up consuming this. */
+   arbitrary strings into whatever ends up consuming this.
+
+   SPAM
+   ---------------------------------------------------------------------------
+   Two checks run before anything is delivered, because every delivered
+   enquiry is an email out of Resend's daily allowance:
+   1. A honeypot (`website`), an input people never see. A bot that fills it
+      is told the enquiry went through, so it learns nothing, and nothing is
+      sent.
+   2. Cloudflare Turnstile, verified server-side when TURNSTILE_SECRET_KEY is
+      set (see lib/turnstile.ts). Unset, the check is skipped, which is what
+      local development without keys wants. */
 
 const VALID_INTENTS: Intent[] = ['project', 'quote', 'exploring', 'careers', 'other'];
 
@@ -50,7 +62,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Malformed request.' }, { status: 400 });
   }
 
-  const input = body as Partial<EnquiryPayload>;
+  const input = body as Partial<EnquiryPayload> & { website?: unknown; turnstileToken?: unknown };
+
+  /* A short, sayable reference so a caller can quote it back on the phone. */
+  const reference = `SC-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+
+  if (typeof input.website === 'string' && input.website.trim()) {
+    console.warn('[enquiry] honeypot filled, dropped', reference);
+    return NextResponse.json({ ok: true, reference });
+  }
+
+  const human = await verifyTurnstile(
+    typeof input.turnstileToken === 'string' ? input.turnstileToken : undefined,
+    request.headers.get('cf-connecting-ip')
+  );
+  if (!human) {
+    return NextResponse.json(
+      {
+        error:
+          'We could not confirm you are not a bot. Please refresh and try again, or email info@scalinamedia.com.',
+      },
+      { status: 403 }
+    );
+  }
 
   const intent = VALID_INTENTS.includes(input.intent as Intent)
     ? (input.intent as Intent)
@@ -101,9 +135,6 @@ export async function POST(request: Request) {
       landedAt: clean(input.attribution?.landedAt, 40),
     },
   };
-
-  /* A short, sayable reference so a caller can quote it back on the phone. */
-  const reference = `SC-${Date.now().toString(36).toUpperCase().slice(-6)}`;
 
   const delivery = await deliver(enquiry, reference);
 

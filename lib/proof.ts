@@ -5,7 +5,8 @@
    where each number came from. The rule is the
    brand file's: a number that cannot be pointed at does not go on the site.
    Cost per lead ($1.9 AUD) and OZI HP's saving (was $400-500 on the old
-   system, now $50: $350+ saved) were supplied by the studio in Sep 2026.
+   system, now $50: $350+ saved) were supplied by the studio in Sep 2026; the
+   saving was confirmed as per month by the owner on 13 Oct 2026.
 
    Totals are derived from lib/work.ts so the grid and the case studies cannot
    disagree. */

@@ -288,14 +288,10 @@ nowhere. The form is visibly broken until a destination exists.
 SCALINA_CRM_ENDPOINT=https://crm.example/api/enquiries
 SCALINA_CRM_TOKEN=…                 # optional; sent as Authorization: Bearer
 
-# Email
-SMTP_HOST=smtp.yourprovider.com
-SMTP_PORT=465                       # defaults: 465 secure, 587 when SMTP_SECURE=false
-SMTP_SECURE=true
-SMTP_USER=…
-SMTP_PASS=…
-ENQUIRY_TO=info@scalinamedia.com    # default
-ENQUIRY_FROM=…                      # defaults to ENQUIRY_TO
+# Email, via Resend's HTTP API (no SDK)
+RESEND_API_KEY=re_…                 # sending-access key
+ENQUIRY_TO=info@scalinamedia.com    # default; comma-separate for several
+ENQUIRY_FROM="Scalina Website <website@scalinamedia.com>"  # default; domain must be verified in Resend
 ```
 
 Behaviour, verified end to end:

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
+import { PHONE, SOCIAL_LINKS } from '@/lib/content';
 import styles from './SiteFooter.module.css';
 
 const STUDIO = [
@@ -12,30 +13,23 @@ const STUDIO = [
 
 const LEGAL = [
   { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
-  { label: 'Cookie Preferences', href: '/cookies' },
+  { label: 'Terms of Use', href: '/terms' },
+  { label: 'Cookie Policy', href: '/cookies' },
 ];
 
 /* Two invented phone numbers used to sit above the email. A fake number in a
    footer is the cheapest possible way to look unfinished, and there is no
-   version of "+61 3 9000 0000" that is better than no number at all. Add the
-   real ones here when they exist.
+   version of "+61 3 9000 0000" that is better than no number at all. The real
+   number lives in lib/content.ts (PHONE).
 
    "Start a project" rather than "Request a proposal": the site had three
    names for one destination. */
 const CONTACT = [
   { label: 'info@scalinamedia.com', href: 'mailto:info@scalinamedia.com' },
-  /* PLACEHOLDER. 0491 570 156 is from the range ACMA reserves for fiction, so
-     it can never ring a real person. Swap for the real business number. */
-  { label: '0491 570 156', href: 'tel:+61491570156' },
+  { label: PHONE.display, href: `tel:${PHONE.tel}` },
   { label: 'Start a project', href: '/start' },
 ];
 
-const SOCIAL = [
-  { label: 'LinkedIn', href: '#' },
-  { label: 'Instagram', href: '#' },
-  { label: 'Facebook', href: '#' },
-];
 
 function Column({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
@@ -99,8 +93,14 @@ export default function SiteFooter() {
 
         <div className={styles.social}>
           <div className={styles.socialList}>
-            {SOCIAL.map((item) => (
-              <a key={item.label} href={item.href} className={styles.columnLink}>
+            {SOCIAL_LINKS.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className={styles.columnLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {item.label}
               </a>
             ))}

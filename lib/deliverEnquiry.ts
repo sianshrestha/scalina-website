@@ -1,5 +1,4 @@
 import 'server-only';
-import nodemailer from 'nodemailer';
 
 /* Delivery for a validated enquiry: the Scalina CRM, and an email to the team.
 
@@ -34,12 +33,14 @@ import nodemailer from 'nodemailer';
      SCALINA_CRM_ENDPOINT   https URL that accepts a POST of the enquiry JSON
      SCALINA_CRM_TOKEN      optional; sent as `Authorization: Bearer …`
 
-     SMTP_HOST              e.g. smtp.yourprovider.com
-     SMTP_PORT              defaults to 465 when SMTP_SECURE is not "false"
-     SMTP_SECURE            "false" for STARTTLS on 587
-     SMTP_USER / SMTP_PASS  credentials
-     ENQUIRY_TO             defaults to info@scalinamedia.com
-     ENQUIRY_FROM           defaults to ENQUIRY_TO
+     RESEND_API_KEY         a Resend API key with sending access
+     ENQUIRY_TO             defaults to info@scalinamedia.com (a group inbox;
+                            comma-separate for more than one address)
+     ENQUIRY_FROM           defaults to "Scalina Website <website@scalinamedia.com>";
+                            its domain must be verified in Resend
+
+   Email goes through Resend's HTTP API rather than SMTP: it is one fetch, needs
+   no SDK, and works on hosts that do not allow outbound SMTP sockets.
 
    The CRM's expected body is not known here, so it receives the enquiry
    verbatim with its reference. If it wants a different shape, map it in
@@ -106,32 +107,39 @@ function asText(enquiry: Enquiry, reference: string): string {
 }
 
 async function toEmail(enquiry: Enquiry, reference: string): Promise<'sent' | 'skipped'> {
-  const host = process.env.SMTP_HOST;
-  if (!host) return 'skipped';
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return 'skipped';
 
-  const secure = process.env.SMTP_SECURE !== 'false';
-  const to = process.env.ENQUIRY_TO ?? 'info@scalinamedia.com';
-  const transport = nodemailer.createTransport({
-    host,
-    port: Number(process.env.SMTP_PORT ?? (secure ? 465 : 587)),
-    secure,
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-        : undefined,
-  });
-
+  const to = (process.env.ENQUIRY_TO ?? 'info@scalinamedia.com')
+    .split(',')
+    .map((address) => address.trim())
+    .filter(Boolean);
   const contact = (enquiry.contact ?? {}) as Record<string, string | undefined>;
-  await transport.sendMail({
-    from: process.env.ENQUIRY_FROM ?? to,
-    to,
-    /* The visitor's address, so hitting reply in the client answers them. */
-    replyTo: contact.email,
-    subject: `Enquiry ${reference}: ${contact.name ?? 'unknown'}${
-      contact.company ? ` (${contact.company})` : ''
-    }`,
-    text: asText(enquiry, reference),
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${apiKey}`,
+      /* A retried submission with the same reference is sent once, not twice. */
+      'idempotency-key': `enquiry-${reference}`,
+    },
+    body: JSON.stringify({
+      from: process.env.ENQUIRY_FROM ?? 'Scalina Website <website@scalinamedia.com>',
+      to,
+      /* The visitor's address, so hitting reply in the client answers them. */
+      reply_to: contact.email,
+      subject: `Enquiry ${reference}: ${contact.name ?? 'unknown'}${
+        contact.company ? ` (${contact.company})` : ''
+      }`,
+      text: asText(enquiry, reference),
+    }),
+    signal: AbortSignal.timeout(8000),
   });
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Resend responded ${response.status} ${detail.slice(0, 200)}`);
+  }
   return 'sent';
 }
 
@@ -165,7 +173,7 @@ export async function deliver(enquiry: Enquiry, reference: string): Promise<Deli
      said not to advertise it until delivery existed. */
   if (result.crm === 'skipped' && result.email === 'skipped') {
     console.error(
-      '[enquiry] NO DESTINATION CONFIGURED — set SCALINA_CRM_ENDPOINT and/or SMTP_HOST in .env.local. ' +
+      '[enquiry] NO DESTINATION CONFIGURED — set SCALINA_CRM_ENDPOINT and/or RESEND_API_KEY in the environment. ' +
         `Enquiry ${reference} exists only in this log.`
     );
   }
